@@ -9,9 +9,8 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLogin = () => {
-    router.push("/jobs");
-  };
+  const handleLogin = () => router.push("/jobs");
+  const handleProfile = () => router.push("/Profile"); // <-- Add this
 
   return (
     <nav className="bg-white shadow-md">
@@ -19,32 +18,27 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <Image
-              src="/Zobs.png"
-              alt="Zobs Logo"
-              width={200}
-              height={50}
-              priority
-            />
+            <Image src="/Zobs.png" alt="Zobs Logo" width={200} height={50} priority />
           </div>
 
           {/* Right Side */}
           <div className="flex items-center space-x-6">
             {pathname === "/jobs" ? (
-              // Show icons on /jobs page
               <>
                 <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <Bookmark size={24} /> {/* Save Jobs */}
+                  <Bookmark size={24} />
                 </button>
                 <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <MessageSquare size={24} /> {/* Messages */}
+                  <MessageSquare size={24} />
                 </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <User size={24} /> {/* Profile */}
+                <button
+                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={handleProfile} // <-- Navigate to profile
+                >
+                  <User size={24} />
                 </button>
               </>
             ) : (
-              // Show Login/Sign Up on other pages
               <>
                 <button
                   onClick={handleLogin}

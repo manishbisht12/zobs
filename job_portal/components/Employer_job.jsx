@@ -1,5 +1,8 @@
 "use client"
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useJobs } from '../app/contexts/JobsContext';
+import { toast } from 'react-toastify';
 import { Briefcase, DollarSign, FileText, Building2, ArrowRight, ArrowLeft } from 'lucide-react';
 
 const PostJobPage = () => {
@@ -28,6 +31,9 @@ const PostJobPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+
+  const router = useRouter();
+  const { addJob } = useJobs();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,8 +91,17 @@ const PostJobPage = () => {
       return;
     }
     
-    console.log('Job Posted:', formData);
-    alert('Job posted successfully!');
+    // add job to global jobs context
+    try {
+      addJob(formData);
+      toast.success('Job posted successfully');
+    } catch (e) {
+      console.error('Failed to add job to context', e);
+      toast.error('Failed to post job');
+    }
+
+    // navigate to jobs listing
+    router.push('/jobs');
   };
 
   const handleSaveDraft = () => {
@@ -95,7 +110,7 @@ const PostJobPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50  to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50  to-purple-50 post-job-form">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Post a New Job</h1>
@@ -531,6 +546,15 @@ const PostJobPage = () => {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .post-job-form label { color: #000 !important; }
+        .post-job-form input, .post-job-form select, .post-job-form textarea, .post-job-form p { color: #000 !important; }
+  /* lighter placeholders for better UX */
+  .post-job-form input::placeholder, .post-job-form textarea::placeholder { color: #9ca3af !important; opacity: 1; }
+        /* override common Tailwind gray class inside this form */
+        .post-job-form .text-gray-700 { color: #000 !important; }
+      `}</style>
     </div>
   );
 };

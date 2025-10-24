@@ -10,7 +10,10 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const handleLogin = () => router.push("/jobs");
-  const handleProfile = () => router.push("/Profile"); // <-- Add this
+  const handleProfile = () => router.push("/Profile");
+
+  // Only show login/signup on specific pages (e.g., home "/")
+  const showAuthButtons = pathname === "/"; // you can add more pages if needed
 
   return (
     <nav className="bg-white shadow-md">
@@ -18,27 +21,18 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <Image src="/Zobs.png" alt="Zobs Logo" width={200} height={50} priority />
+            <Image
+              src="/Zobs.png"
+              alt="Zobs Logo"
+              width={200}
+              height={50}
+              priority
+            />
           </div>
 
           {/* Right Side */}
           <div className="flex items-center space-x-6">
-            {pathname === "/jobs" ? (
-              <>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <Bookmark size={24} />
-                </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <MessageSquare size={24} />
-                </button>
-                <button
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={handleProfile} // <-- Navigate to profile
-                >
-                  <User size={24} />
-                </button>
-              </>
-            ) : (
+            {showAuthButtons ? (
               <>
                 <button
                   onClick={handleLogin}
@@ -48,6 +42,21 @@ export default function Navbar() {
                 </button>
                 <button className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
                   Sign Up
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="text-gray-700 hover:text-blue-600 transition-colors">
+                  <Bookmark size={24} />
+                </button>
+                <button className="text-gray-700 hover:text-blue-600 transition-colors">
+                  <MessageSquare size={24} />
+                </button>
+                <button
+                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={handleProfile}
+                >
+                  <User size={24} />
                 </button>
               </>
             )}

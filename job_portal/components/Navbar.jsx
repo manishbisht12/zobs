@@ -11,9 +11,10 @@ export default function Navbar() {
 
   const handleLogin = () => router.push("/jobs");
   const handleProfile = () => router.push("/Profile");
+  const handleEmployer = () => router.push("/Employer"); // Navigate to Employer page
 
   // Only show login/signup on specific pages (e.g., home "/")
-  const showAuthButtons = pathname === "/"; // you can add more pages if needed
+  const showAuthButtons = pathname === "/"; 
 
   return (
     <nav className="bg-white shadow-md">
@@ -46,6 +47,7 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                {/* Icons */}
                 <button className="text-gray-700 hover:text-blue-600 transition-colors">
                   <Bookmark size={24} />
                 </button>
@@ -58,6 +60,17 @@ export default function Navbar() {
                 >
                   <User size={24} />
                 </button>
+
+                {/* Vertical Divider */}
+                <div className="border-l h-6 border-gray-300"></div>
+
+                {/* Employers / Post Job */}
+                <span
+                  onClick={handleEmployer}
+                  className="text-gray-700 font-medium cursor-pointer hover:text-blue-600"
+                >
+                  Employers / Post Job
+                </span>
               </>
             )}
           </div>

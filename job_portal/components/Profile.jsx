@@ -14,6 +14,8 @@ import {
   Download,
   Camera,
   Save,
+  Plus,
+  Trash2,
 } from "lucide-react";
 
 const Profile = () => {
@@ -34,11 +36,6 @@ const Profile = () => {
       { name: "React.js", level: 90 },
       { name: "Node.js", level: 85 },
       { name: "JavaScript", level: 95 },
-      { name: "TypeScript", level: 80 },
-      { name: "Python", level: 75 },
-      { name: "AWS", level: 70 },
-      { name: "MongoDB", level: 85 },
-      { name: "Git", level: 90 },
     ],
     projects: [
       {
@@ -48,20 +45,6 @@ const Profile = () => {
         technologies: ["React", "Node.js", "MongoDB", "Stripe"],
         link: "github.com/johndoe/ecommerce",
       },
-      {
-        title: "Task Management App",
-        description:
-          "Developed a collaborative task management application with real-time updates and team collaboration features.",
-        technologies: ["React", "Firebase", "Material-UI"],
-        link: "github.com/johndoe/taskmanager",
-      },
-      {
-        title: "Weather Dashboard",
-        description:
-          "Created an interactive weather dashboard with forecasts, maps, and historical data visualization.",
-        technologies: ["React", "OpenWeather API", "Chart.js"],
-        link: "github.com/johndoe/weather",
-      },
     ],
     experience: [
       {
@@ -70,54 +53,115 @@ const Profile = () => {
         duration: "2022 - Present",
         description: "Leading development of customer-facing web applications",
       },
-      {
-        position: "Full Stack Developer",
-        company: "StartUp Inc",
-        duration: "2019 - 2022",
-        description: "Developed and maintained multiple client projects",
-      },
     ],
   });
 
   const coverInputRef = useRef(null);
   const profileInputRef = useRef(null);
 
+  // ---------- Image Handlers ----------
   const handleCoverImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileData((prev) => ({ ...prev, coverImage: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileData((prev) => ({ ...prev, coverImage: reader.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleProfileImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileData((prev) => ({ ...prev, profileImage: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileData((prev) => ({ ...prev, profileImage: reader.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
+  // ---------- Generic Field Changes ----------
   const handleChange = (field, value) => {
     setProfileData((prev) => ({ ...prev, [field]: value }));
   };
 
+  // ---------- Skills Handlers ----------
   const handleSkillChange = (index, field, value) => {
-    const newSkills = [...profileData.skills];
-    newSkills[index][field] = value;
-    setProfileData((prev) => ({ ...prev, skills: newSkills }));
+    const updatedSkills = [...profileData.skills];
+    updatedSkills[index][field] = value;
+    setProfileData((prev) => ({ ...prev, skills: updatedSkills }));
   };
 
+  const handleAddSkill = () => {
+    setProfileData((prev) => ({
+      ...prev,
+      skills: [...prev.skills, { name: "New Skill", level: 50 }],
+    }));
+  };
+
+  const handleDeleteSkill = (index) => {
+    setProfileData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((_, i) => i !== index),
+    }));
+  };
+
+  // ---------- Projects Handlers ----------
   const handleProjectChange = (index, field, value) => {
-    const newProjects = [...profileData.projects];
-    newProjects[index][field] = value;
-    setProfileData((prev) => ({ ...prev, projects: newProjects }));
+    const updatedProjects = [...profileData.projects];
+    updatedProjects[index][field] = value;
+    setProfileData((prev) => ({ ...prev, projects: updatedProjects }));
+  };
+
+  const handleAddProject = () => {
+    setProfileData((prev) => ({
+      ...prev,
+      projects: [
+        ...prev.projects,
+        {
+          title: "New Project",
+          description: "Project description here...",
+          technologies: ["React"],
+          link: "github.com/username/newproject",
+        },
+      ],
+    }));
+  };
+
+  const handleDeleteProject = (index) => {
+    setProfileData((prev) => ({
+      ...prev,
+      projects: prev.projects.filter((_, i) => i !== index),
+    }));
+  };
+
+  // ---------- Experience Handlers ----------
+  const handleExperienceChange = (index, field, value) => {
+    const updatedExp = [...profileData.experience];
+    updatedExp[index][field] = value;
+    setProfileData((prev) => ({ ...prev, experience: updatedExp }));
+  };
+
+  const handleAddExperience = () => {
+    setProfileData((prev) => ({
+      ...prev,
+      experience: [
+        ...prev.experience,
+        {
+          position: "New Position",
+          company: "New Company",
+          duration: "Year - Year",
+          description: "Description here...",
+        },
+      ],
+    }));
+  };
+
+  const handleDeleteExperience = (index) => {
+    setProfileData((prev) => ({
+      ...prev,
+      experience: prev.experience.filter((_, i) => i !== index),
+    }));
   };
 
   const handleEditToggle = () => setIsEditing((prev) => !prev);
@@ -270,16 +314,16 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Buttons below profile info */}
-            <div className="flex flex-col sm:flex-row gap-2 mt-4 md:mt-6 w-full sm:w-auto z-10">
-              <button className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md hover:shadow-lg font-medium text-sm">
+            {/* Buttons — Aligned to the Right */}
+            <div className="flex justify-end gap-2 mt-6">
+              <button className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md font-medium text-sm">
                 <Download size={16} />
                 Resume
               </button>
 
               <button
                 onClick={isEditing ? handleSave : handleEditToggle}
-                className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg transition-all shadow-md hover:shadow-lg font-medium text-sm ${
+                className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg transition-all shadow-md font-medium text-sm ${
                   isEditing
                     ? "bg-green-600 text-white hover:bg-green-700"
                     : "bg-white text-gray-800 hover:bg-gray-50 border-2 border-gray-300"
@@ -313,65 +357,82 @@ const Profile = () => {
                 <textarea
                   value={profileData.about}
                   onChange={(e) => handleChange("about", e.target.value)}
-                  className="w-full border border-blue-200 rounded-lg p-3 text-gray-700 focus:outline-none focus:border-blue-400"
+                  className="w-full border border-blue-200 rounded-lg p-3 text-gray-700 focus:outline-none"
                   rows="5"
                 />
               ) : (
-                <p className="text-gray-600 leading-relaxed">{profileData.about}</p>
+                <p className="text-gray-600 leading-relaxed">
+                  {profileData.about}
+                </p>
               )}
             </div>
 
             {/* Skills Section */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Award className="text-blue-600" size={24} />
-                <h2 className="text-xl font-bold text-gray-800">Skills</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Award className="text-blue-600" size={24} />
+                  <h2 className="text-xl font-bold text-gray-800">Skills</h2>
+                </div>
+                {isEditing && (
+                  <button
+                    onClick={handleAddSkill}
+                    className="flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
+                  >
+                    <Plus size={16} /> Add
+                  </button>
+                )}
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 {profileData.skills.map((skill, index) => (
                   <div
                     key={index}
-                    className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:shadow-md group overflow-hidden"
+                    className="relative bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100 hover:border-blue-300 transition"
                   >
-                    <div className="relative z-10">
-                      {isEditing ? (
-                        <>
-                          <input
-                            type="text"
-                            value={skill.name}
-                            onChange={(e) =>
-                              handleSkillChange(index, "name", e.target.value)
-                            }
-                            className="text-sm font-semibold text-gray-800 mb-2 border-b border-blue-200 focus:outline-none bg-transparent"
-                          />
-                          <input
-                            type="number"
-                            value={skill.level}
-                            onChange={(e) =>
-                              handleSkillChange(index, "level", e.target.value)
-                            }
-                            className="w-full text-xs font-bold text-blue-600 focus:outline-none border-b border-blue-200 bg-transparent"
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <div className="text-sm font-semibold text-gray-800 mb-2">
-                            {skill.name}
+                    {isEditing ? (
+                      <>
+                        <input
+                          type="text"
+                          value={skill.name}
+                          onChange={(e) =>
+                            handleSkillChange(index, "name", e.target.value)
+                          }
+                          className="text-sm font-semibold text-gray-800 mb-2 border-b border-blue-200 focus:outline-none bg-transparent"
+                        />
+                        <input
+                          type="number"
+                          value={skill.level}
+                          onChange={(e) =>
+                            handleSkillChange(index, "level", e.target.value)
+                          }
+                          className="w-full text-xs font-bold text-blue-600 focus:outline-none border-b border-blue-200 bg-transparent"
+                        />
+                        <button
+                          onClick={() => handleDeleteSkill(index)}
+                          className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-sm font-semibold text-gray-800 mb-2">
+                          {skill.name}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-white rounded-full h-1.5 overflow-hidden">
+                            <div
+                              className="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full"
+                              style={{ width: `${skill.level}%` }}
+                            ></div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 bg-white rounded-full h-1.5 overflow-hidden">
-                              <div
-                                className="bg-gradient-to-r from-blue-500 to-purple-600 h-full rounded-full transition-all duration-500"
-                                style={{ width: `${skill.level}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs font-bold text-blue-600">
-                              {skill.level}%
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </div>
+                          <span className="text-xs font-bold text-blue-600">
+                            {skill.level}%
+                          </span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>
@@ -382,30 +443,122 @@ const Profile = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Experience Section */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Briefcase className="text-blue-600" size={24} />
-                <h2 className="text-xl font-bold text-gray-800">Experience</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Briefcase className="text-blue-600" size={24} />
+                  <h2 className="text-xl font-bold text-gray-800">
+                    Experience
+                  </h2>
+                </div>
+                {isEditing && (
+                  <button
+                    onClick={handleAddExperience}
+                    className="flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
+                  >
+                    <Plus size={16} /> Add
+                  </button>
+                )}
               </div>
+
               {profileData.experience.map((exp, index) => (
-                <div key={index} className="border-l-4 border-blue-600 pl-4 py-2">
-                  <h3 className="text-lg font-semibold text-gray-800">{exp.position}</h3>
-                  <p className="text-blue-600 font-medium">{exp.company}</p>
-                  <p className="text-sm text-gray-500 mt-1">{exp.duration}</p>
-                  <p className="text-gray-600 mt-2">{exp.description}</p>
+                <div
+                  key={index}
+                  className="border-l-4 border-blue-600 pl-4 py-2 relative"
+                >
+                  {isEditing ? (
+                    <>
+                      <input
+                        type="text"
+                        value={exp.position}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            index,
+                            "position",
+                            e.target.value
+                          )
+                        }
+                        className="text-lg font-semibold text-gray-800 border-b border-blue-200 mb-1 w-full focus:outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={exp.company}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            index,
+                            "company",
+                            e.target.value
+                          )
+                        }
+                        className="text-blue-600 font-medium border-b border-blue-200 mb-1 w-full focus:outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={exp.duration}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            index,
+                            "duration",
+                            e.target.value
+                          )
+                        }
+                        className="text-sm text-gray-500 border-b border-blue-200 mb-1 w-full focus:outline-none"
+                      />
+                      <textarea
+                        value={exp.description}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                        className="w-full text-gray-600 border border-blue-200 rounded-md p-2 mb-2 focus:outline-none"
+                        rows="2"
+                      />
+                      <button
+                        onClick={() => handleDeleteExperience(index)}
+                        className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {exp.position}
+                      </h3>
+                      <p className="text-blue-600 font-medium">{exp.company}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {exp.duration}
+                      </p>
+                      <p className="text-gray-600 mt-2">{exp.description}</p>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
 
             {/* Projects Section */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <FileText className="text-blue-600" size={24} />
-                <h2 className="text-xl font-bold text-gray-800">Projects</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <FileText className="text-blue-600" size={24} />
+                  <h2 className="text-xl font-bold text-gray-800">Projects</h2>
+                </div>
+                {isEditing && (
+                  <button
+                    onClick={handleAddProject}
+                    className="flex items-center gap-1 text-blue-600 text-sm font-medium hover:underline"
+                  >
+                    <Plus size={16} /> Add
+                  </button>
+                )}
               </div>
+
               {profileData.projects.map((project, index) => (
                 <div
                   key={index}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition relative"
                 >
                   {isEditing ? (
                     <>
@@ -415,12 +568,16 @@ const Profile = () => {
                         onChange={(e) =>
                           handleProjectChange(index, "title", e.target.value)
                         }
-                        className="w-full text-lg font-semibold text-gray-800 border-b border-blue-200 focus:outline-none mb-2"
+                        className="w-full text-lg font-semibold text-gray-800 border-b border-blue-200 mb-2 focus:outline-none"
                       />
                       <textarea
                         value={project.description}
                         onChange={(e) =>
-                          handleProjectChange(index, "description", e.target.value)
+                          handleProjectChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
                         }
                         className="w-full border border-blue-200 rounded-lg p-2 mb-2 focus:outline-none"
                         rows="3"
@@ -433,15 +590,25 @@ const Profile = () => {
                         }
                         className="w-full border-b border-blue-200 focus:outline-none text-sm text-blue-600 mb-2"
                       />
+                      <button
+                        onClick={() => handleDeleteProject(index)}
+                        className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </>
                   ) : (
                     <>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">{project.title}</h3>
-                      <p className="text-gray-600 mb-3">{project.description}</p>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        {project.title}
+                      </h3>
+                      <p className="text-gray-600 mb-3">
+                        {project.description}
+                      </p>
                       <div className="flex flex-wrap gap-2 mb-3">
-                        {project.technologies.map((tech, techIndex) => (
+                        {project.technologies.map((tech, i) => (
                           <span
-                            key={techIndex}
+                            key={i}
                             className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium"
                           >
                             {tech}

@@ -11,17 +11,32 @@ export default function Navbar() {
 
   const handleLogin = () => router.push("/jobs");
   const handleProfile = () => router.push("/Profile");
-  const handleEmployer = () => router.push("/Employer"); // Navigate to Employer page
+  const handleEmployer = () => router.push("/Employer");
+  const handleLogoClick = () => router.push("/jobs"); // Logo click
 
   // Only show login/signup on specific pages (e.g., home "/")
   const showAuthButtons = pathname === "/"; 
+
+  // Helper component for icon with tooltip
+  const IconWithTooltip = ({ Icon, label, onClick }) => (
+    <div className="relative flex flex-col items-center group cursor-pointer" onClick={onClick}>
+      <Icon size={24} className="text-gray-700 group-hover:text-blue-600 transition-colors" />
+      
+      {/* Tooltip */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 text-xs bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+        {label}
+        {/* Thin arrow pointing up */}
+        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+      </div>
+    </div>
+  );
 
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2 flex-shrink-0">
+          <div className="flex items-center space-x-2 flex-shrink-0 cursor-pointer" onClick={handleLogoClick}>
             <Image
               src="/Zobs.png"
               alt="Zobs Logo"
@@ -47,19 +62,10 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                {/* Icons */}
-                <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <Bookmark size={24} />
-                </button>
-                <button className="text-gray-700 hover:text-blue-600 transition-colors">
-                  <MessageSquare size={24} />
-                </button>
-                <button
-                  className="text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={handleProfile}
-                >
-                  <User size={24} />
-                </button>
+                {/* Icons with tooltip */}
+                <IconWithTooltip Icon={Bookmark} label="Bookmarks" />
+                <IconWithTooltip Icon={MessageSquare} label="Messages" />
+                <IconWithTooltip Icon={User} label="Profile" onClick={handleProfile} />
 
                 {/* Vertical Divider */}
                 <div className="border-l h-6 border-gray-300"></div>

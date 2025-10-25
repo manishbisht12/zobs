@@ -5,6 +5,7 @@ const JobsContext = createContext();
 
 export const JobsProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
+  const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
 
   const addJob = (job) => {
     const newJob = {
@@ -15,8 +16,23 @@ export const JobsProvider = ({ children }) => {
     setJobs(prev => [newJob, ...prev]);
   };
 
+  const toggleBookmark = (job) => {
+    setBookmarkedJobs(prev => {
+      const isBookmarked = prev.some(bj => bj.id === job.id);
+      if (isBookmarked) {
+        return prev.filter(bj => bj.id !== job.id);
+      } else {
+        return [...prev, job];
+      }
+    });
+  };
+
+  const isBookmarked = (jobId) => {
+    return bookmarkedJobs.some(bj => bj.id === jobId);
+  };
+
   return (
-    <JobsContext.Provider value={{ jobs, addJob }}>
+    <JobsContext.Provider value={{ jobs, addJob, bookmarkedJobs, toggleBookmark, isBookmarked }}>
       {children}
     </JobsContext.Provider>
   );

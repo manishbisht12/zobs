@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Bookmark, Send, MapPin } from 'lucide-react';
+import { useJobs } from '../app/contexts/JobsContext';
 
 export default function JobDetail({ job }) {
-  const [saved, setSaved] = useState(false);
+  const { toggleBookmark, isBookmarked } = useJobs();
 
   if (!job) {
     return (
@@ -14,7 +15,7 @@ export default function JobDetail({ job }) {
     );
   }
 
-  const handleBookmark = () => setSaved(s => !s);
+  const handleBookmark = () => toggleBookmark(job);
 
   const handleApply = () => {
     if (job.contactEmail) {
@@ -87,8 +88,8 @@ export default function JobDetail({ job }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <button onClick={handleBookmark} className={`text-gray-600 hover:text-gray-800 ${saved ? 'text-blue-600' : ''}`}>
-            <Bookmark className="w-5 h-5" />
+          <button onClick={handleBookmark} className={`text-gray-600 hover:text-gray-800 ${isBookmarked(job.id) ? 'text-blue-600' : ''}`}>
+            <Bookmark className={`w-5 h-5 ${isBookmarked(job.id) ? 'fill-current' : ''}`} />
           </button>
         </div>
       </div>

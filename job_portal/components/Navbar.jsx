@@ -1,21 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { Bookmark, MessageSquare, User } from "lucide-react";
+import BookmarksDropdown from "./BookmarksDropdown";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const [showBookmarks, setShowBookmarks] = useState(false);
 
   const handleLogin = () => router.push("/jobs");
   const handleProfile = () => router.push("/Profile");
   const handleEmployer = () => router.push("/Employer");
   const handleLogoClick = () => router.push("/jobs"); // Logo click
+  const handleBookmarkClick = () => setShowBookmarks(!showBookmarks);
 
   // Only show login/signup on specific pages (e.g., home "/")
-  const showAuthButtons = pathname === "/"; 
+  const showAuthButtons = pathname === "/";
 
   // Helper component for icon with tooltip
   const IconWithTooltip = ({ Icon, label, onClick }) => (
@@ -63,7 +66,10 @@ export default function Navbar() {
             ) : (
               <>
                 {/* Icons with tooltip */}
-                <IconWithTooltip Icon={Bookmark} label="Bookmarks" />
+                <div className="relative">
+                  <IconWithTooltip Icon={Bookmark} label="Bookmarks" onClick={handleBookmarkClick} />
+                  <BookmarksDropdown isOpen={showBookmarks} onClose={() => setShowBookmarks(false)} />
+                </div>
                 <IconWithTooltip Icon={MessageSquare} label="Messages" />
                 <IconWithTooltip Icon={User} label="Profile" onClick={handleProfile} />
 

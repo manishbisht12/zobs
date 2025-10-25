@@ -6,6 +6,7 @@ const JobsContext = createContext();
 export const JobsProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
   const [bookmarkedJobs, setBookmarkedJobs] = useState([]);
+  const [hasNewBookmark, setHasNewBookmark] = useState(false);
 
   const addJob = (job) => {
     const newJob = {
@@ -22,6 +23,7 @@ export const JobsProvider = ({ children }) => {
       if (isBookmarked) {
         return prev.filter(bj => bj.id !== job.id);
       } else {
+        setHasNewBookmark(true); // Show notification when bookmarking
         return [...prev, job];
       }
     });
@@ -31,8 +33,12 @@ export const JobsProvider = ({ children }) => {
     return bookmarkedJobs.some(bj => bj.id === jobId);
   };
 
+  const clearNotification = () => {
+    setHasNewBookmark(false);
+  };
+
   return (
-    <JobsContext.Provider value={{ jobs, addJob, bookmarkedJobs, toggleBookmark, isBookmarked }}>
+    <JobsContext.Provider value={{ jobs, addJob, bookmarkedJobs, toggleBookmark, isBookmarked, hasNewBookmark, clearNotification }}>
       {children}
     </JobsContext.Provider>
   );

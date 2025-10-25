@@ -5,17 +5,24 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { Bookmark, MessageSquare, User } from "lucide-react";
 import BookmarksDropdown from "./BookmarksDropdown";
+import { useJobs } from "../app/contexts/JobsContext";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [showBookmarks, setShowBookmarks] = useState(false);
+  const { hasNewBookmark, clearNotification, bookmarkedJobs } = useJobs();
 
   const handleLogin = () => router.push("/jobs");
   const handleProfile = () => router.push("/Profile");
   const handleEmployer = () => router.push("/Employer");
   const handleLogoClick = () => router.push("/jobs"); // Logo click
-  const handleBookmarkClick = () => setShowBookmarks(!showBookmarks);
+  const handleBookmarkClick = () => {
+    setShowBookmarks(!showBookmarks);
+    if (!showBookmarks && hasNewBookmark) {
+      clearNotification(); // Clear notification when opening dropdown
+    }
+  };
 
   // Only show login/signup on specific pages (e.g., home "/")
   const showAuthButtons = pathname === "/";
@@ -67,7 +74,17 @@ export default function Navbar() {
               <>
                 {/* Icons with tooltip */}
                 <div className="relative">
-                  <IconWithTooltip Icon={Bookmark} label="Bookmarks" onClick={handleBookmarkClick} />
+                  <div className="relative">
+                    <IconWithTooltip Icon={Bookmark} label="Bookmarks" onClick={handleBookmarkClick} />
+                    {hasNewBookmark && bookmarkedJobs.length > 0 && (
+                      <span 
+                        className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center cursor-pointer"
+                        onClick={handleBookmarkClick}
+                      >
+                        {bookmarkedJobs.length}
+                      </span>
+                    )}
+                  </div>
                   <BookmarksDropdown isOpen={showBookmarks} onClose={() => setShowBookmarks(false)} />
                 </div>
                 <IconWithTooltip Icon={MessageSquare} label="Messages" />

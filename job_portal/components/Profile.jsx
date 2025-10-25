@@ -233,21 +233,21 @@ const Profile = () => {
                       type="text"
                       value={profileData.name}
                       onChange={(e) => handleChange("name", e.target.value)}
-                      className="text-3xl font-bold text-gray-800 border-b-2 border-blue-300 focus:outline-none bg-transparent text-center md:text-left"
+                      className="text-2xl md:text-3xl font-bold text-gray-800 border-b-2 border-blue-300 focus:outline-none bg-transparent text-center md:text-left block w-full"
                     />
                     <input
                       type="text"
                       value={profileData.title}
                       onChange={(e) => handleChange("title", e.target.value)}
-                      className="text-xl text-gray-600 mt-2 border-b border-blue-200 focus:outline-none bg-transparent text-center md:text-left"
+                      className="text-lg md:text-xl text-gray-600 mt-2 border-b border-blue-200 focus:outline-none bg-transparent text-center md:text-left block w-full"
                     />
                   </>
                 ) : (
                   <>
-                    <h1 className="text-3xl font-bold text-gray-800">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
                       {profileData.name}
                     </h1>
-                    <p className="text-xl text-gray-600 mt-1">
+                    <p className="text-lg md:text-xl text-gray-600 mt-1">
                       {profileData.title}
                     </p>
                   </>

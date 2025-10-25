@@ -59,17 +59,26 @@ export default function Navbar() {
           {/* Right Side */}
           <div className="flex items-center space-x-6">
             {showAuthButtons ? (
-              <>
-                <button
-                  onClick={handleLogin}
-                  className="px-6 py-2 text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200"
-                >
-                  Login
-                </button>
-                <button className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                  Sign Up
-                </button>
-              </>
+          <>
+  {/* Login Button with Border */}
+  <button
+    onClick={handleLogin}
+    className="px-6 py-2 text-[rgb(77,70,217)] border border-[rgb(77,70,217)] rounded-lg font-medium hover:bg-[rgb(77,70,217)] hover:text-white transition-colors duration-200"
+  >
+    Login
+  </button>
+
+  {/* Divider Line */}
+  <div className="border-l h-6 border-gray-300"></div>
+
+  {/* Sign Up Button with Solid Background */}
+  <button className="px-6 py-2 bg-[rgb(77,70,217)] text-white font-medium rounded-lg hover:bg-[rgb(67,60,197)] transition-colors duration-200">
+    Sign Up
+  </button>
+</>
+
+
+
             ) : (
               <>
                 {/* Icons with tooltip */}

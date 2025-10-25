@@ -11,9 +11,14 @@ export default function Hero() {
           {/* Left */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                Find Your Dream Job
-              </h1>
+          <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+  Find Your{" "}
+  <span className="bg-gradient-to-r from-[#DB6371] to-green-500 bg-clip-text text-transparent">
+    Dream Job
+  </span>
+</h1>
+
+
               <p className="text-xl text-gray-600">
                 Thousands of jobs from top companies waiting for you
               </p>
@@ -27,7 +32,7 @@ export default function Hero() {
                   <input
                     type="text"
                     placeholder="Dream job"
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
                   />
                 </div>
 
@@ -36,23 +41,25 @@ export default function Hero() {
                   <input
                     type="text"
                     placeholder="Location"
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent"
                   />
                 </div>
               </div>
 
-              <button className="w-full mt-4 bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center space-x-2">
-                <FiSearch className="w-5 h-5" />
-                <span>Search Jobs</span>
-              </button>
+              <button className="w-full mt-4 bg-[#4D46D9] text-white font-semibold py-3 rounded-lg hover:bg-[#3F38C6] transition-colors duration-200 flex items-center justify-center space-x-2">
+  <FiSearch className="w-5 h-5" />
+  <span>Search Jobs</span>
+</button>
+
             </div>
 
             {/* CTA */}
             <div className="flex items-center space-x-4">
-              <button className="bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-indigo-700 transition-colors duration-200 flex items-center space-x-2">
-                <FiBriefcase className="w-5 h-5" />
-                <span>Post a Job</span>
-              </button>
+             <button className="bg-[#4D46D9] text-white font-semibold px-8 py-3 rounded-lg hover:bg-[#3F38C6] transition-colors duration-200 flex items-center space-x-2">
+  <FiBriefcase className="w-5 h-5" />
+  <span>Post a Job</span>
+</button>
+
               <p className="text-sm text-gray-600">Are you an employer?</p>
             </div>
           </div>

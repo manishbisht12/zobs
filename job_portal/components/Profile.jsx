@@ -20,14 +20,16 @@ import {
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
+  const [resumeFileName, setResumeFileName] = useState(null);
   const [profileData, setProfileData] = useState({
-    name: "John Doe",
+    name: "Manish Bisht",
     title: "Full Stack Developer",
-    email: "john.doe@example.com",
+    email: "manibisht345@gmail.com",
     phone: "+1 234 567 8900",
     location: "San Francisco, CA",
     joinDate: "January 2024",
-    profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+    profileImage: "https://api.dicebear.com/7.x/avataaars/svg?seed=Manish",
     coverImage:
       "https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&h=400&fit=crop",
     about:
@@ -58,6 +60,7 @@ const Profile = () => {
 
   const coverInputRef = useRef(null);
   const profileInputRef = useRef(null);
+  const resumeInputRef = useRef(null);
 
   // ---------- Image Handlers ----------
   const handleCoverImageChange = (e) => {
@@ -166,6 +169,40 @@ const Profile = () => {
 
   const handleEditToggle = () => setIsEditing((prev) => !prev);
   const handleSave = () => setIsEditing(false);
+
+  // ---------- Resume Handlers ----------
+  const handleResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.type !== "application/pdf") {
+      alert("Please upload a PDF file");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setResumeFile(reader.result);
+      setResumeFileName(file.name);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleResumeDownload = () => {
+    if (!resumeFile) {
+      // If no resume exists, open file picker to upload one
+      resumeInputRef.current?.click();
+      return;
+    }
+
+    // Create a link element and trigger download
+    const link = document.createElement("a");
+    link.href = resumeFile;
+    link.download = resumeFileName || `${profileData.name}_Resume.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
@@ -316,9 +353,19 @@ const Profile = () => {
 
             {/* Buttons — Aligned to the Right */}
             <div className="flex justify-end gap-2 mt-5">
-              <button className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md font-medium text-sm">
+              <input
+                ref={resumeInputRef}
+                type="file"
+                accept="application/pdf"
+                className="hidden"
+                onChange={handleResumeUpload}
+              />
+              <button
+                onClick={handleResumeDownload}
+                className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md font-medium text-sm"
+              >
                 <Download size={16} />
-                Resume
+                {resumeFile ? "Download Resume" : "Upload Resume"}
               </button>
 
               <button

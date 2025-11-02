@@ -226,7 +226,7 @@ const Profile = () => {
               </div>
 
               {/* Profile Info */}
-              <div className="flex-1 text-center md:text-left mt-4 md:mt-8">
+              <div className="flex-1 text-center md:text-left mt-4 md:mt-20">
                 {isEditing ? (
                   <>
                     <input
@@ -315,7 +315,7 @@ const Profile = () => {
             </div>
 
             {/* Buttons — Aligned to the Right */}
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-2 mt-5">
               <button className="flex items-center justify-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all shadow-md font-medium text-sm">
                 <Download size={16} />
                 Resume

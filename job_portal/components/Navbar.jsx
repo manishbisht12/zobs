@@ -13,10 +13,11 @@ export default function Navbar() {
   const [showBookmarks, setShowBookmarks] = useState(false);
   const { hasNewBookmark, clearNotification, bookmarkedJobs } = useJobs();
 
-  const handleLogin = () => router.push("/jobs");
+  const handleLogin = () => router.push("/Login");
+  const handleSignup = () => router.push("/Signup");
   const handleProfile = () => router.push("/Profile");
   const handleEmployer = () => router.push("/Employer");
-  const handleLogoClick = () => router.push("/jobs"); // Logo click
+  const handleLogoClick = () => router.push("/"); // Logo click
   const handleBookmarkClick = () => {
     setShowBookmarks(!showBookmarks);
     if (!showBookmarks && hasNewBookmark) {
@@ -48,7 +49,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center space-x-2 flex-shrink-0 cursor-pointer" onClick={handleLogoClick}>
             <Image
-              src="/Zobs.png"
+              src="/zobs.png"
               alt="Zobs Logo"
               width={200}
               height={50}
@@ -72,7 +73,10 @@ export default function Navbar() {
   <div className="border-l h-6 border-gray-300"></div>
 
   {/* Sign Up Button with Solid Background */}
-  <button className="px-6 py-2 bg-[rgb(77,70,217)] text-white font-medium rounded-lg hover:bg-[rgb(67,60,197)] transition-colors duration-200">
+  <button 
+    onClick={handleSignup}
+    className="px-6 py-2 bg-[rgb(77,70,217)] text-white font-medium rounded-lg hover:bg-[rgb(67,60,197)] transition-colors duration-200"
+  >
     Sign Up
   </button>
 </>

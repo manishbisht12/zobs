@@ -1,7 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -22,6 +23,9 @@ app.get('/', (req, res) => {
     status: 'Server is running'
   });
 });
+
+// Auth Routes
+app.use('/api/auth', authRoutes);
 
 
 // Start Server

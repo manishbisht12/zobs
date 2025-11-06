@@ -28,7 +28,7 @@ export default function EmployerAnalyticsPage() {
           <p className="text-gray-600">Track performance and insights for your job postings</p>
         </div>
         <div className="flex gap-4">
-          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <select className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
             <option>Last 7 days</option>
             <option>Last 30 days</option>
             <option>Last 90 days</option>
@@ -44,30 +44,26 @@ export default function EmployerAnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {metrics.map((metric, index) => {
           const Icon = metric.icon;
-          const colorClasses = {
-            blue: 'from-blue-500 to-blue-600',
-            green: 'from-green-500 to-green-600',
-            purple: 'from-purple-500 to-purple-600',
-            orange: 'from-orange-500 to-orange-600',
-          };
           
           return (
             <div
               key={index}
-              className={`bg-gradient-to-br ${colorClasses[metric.color]} text-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow`}
+              className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                  <Icon className="w-6 h-6" />
+                <div className="p-3 bg-gray-100 rounded-lg">
+                  <Icon className="w-6 h-6 text-gray-900" />
                 </div>
-                <span className={`text-sm font-semibold bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm ${
-                  metric.change.startsWith('-') ? 'text-red-200' : ''
+                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                  metric.change.startsWith('-') 
+                    ? 'bg-red-100 text-red-700' 
+                    : 'bg-green-100 text-green-700'
                 }`}>
                   {metric.change}
                 </span>
               </div>
-              <h3 className="text-white/80 text-sm font-medium mb-1">{metric.label}</h3>
-              <p className="text-3xl font-bold">{metric.value}</p>
+              <h3 className="text-gray-600 text-sm font-medium mb-1">{metric.label}</h3>
+              <p className="text-3xl font-bold text-gray-900">{metric.value}</p>
             </div>
           );
         })}
@@ -124,7 +120,7 @@ export default function EmployerAnalyticsPage() {
                 <span className="text-gray-900 font-bold">76%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-blue-600 h-2 rounded-full" style={{ width: '76%' }}></div>
+                <div className="bg-gray-900 h-2 rounded-full" style={{ width: '76%' }}></div>
               </div>
             </div>
             
@@ -134,7 +130,7 @@ export default function EmployerAnalyticsPage() {
                 <span className="text-gray-900 font-bold">32.4%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-green-600 h-2 rounded-full" style={{ width: '32%' }}></div>
+                <div className="bg-gray-800 h-2 rounded-full" style={{ width: '32%' }}></div>
               </div>
             </div>
             
@@ -144,7 +140,7 @@ export default function EmployerAnalyticsPage() {
                 <span className="text-gray-900 font-bold">68.9%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-purple-600 h-2 rounded-full" style={{ width: '69%' }}></div>
+                <div className="bg-gray-700 h-2 rounded-full" style={{ width: '69%' }}></div>
               </div>
             </div>
             
@@ -154,7 +150,7 @@ export default function EmployerAnalyticsPage() {
                 <span className="text-gray-900 font-bold">12 days</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-orange-600 h-2 rounded-full" style={{ width: '60%' }}></div>
+                <div className="bg-gray-900 h-2 rounded-full" style={{ width: '60%' }}></div>
               </div>
             </div>
           </div>

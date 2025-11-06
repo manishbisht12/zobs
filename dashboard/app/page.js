@@ -15,7 +15,7 @@ export default function Home() {
       <div className="w-full max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-center mb-6">
             <div className="w-20 h-20 bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl flex items-center justify-center shadow-xl">
               <span className="text-white font-bold text-4xl">Z</span>
             </div>
@@ -129,7 +129,7 @@ export default function Home() {
                   <Settings className="w-5 h-5 text-blue-600" />
                   <span className="text-sm font-medium">Company Settings</span>
                 </div>
-              </div>
+        </div>
 
               {/* CTA Buttons */}
               <div className="flex flex-col gap-3">
@@ -143,7 +143,7 @@ export default function Home() {
                   <Briefcase className="w-5 h-5" />
                   Login
                 </button>
-                <button
+        <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handleCardClick('/employer/signup');
@@ -151,7 +151,7 @@ export default function Home() {
                   className="w-full border-2 border-blue-600 text-blue-600 font-semibold py-3 px-4 rounded-xl hover:bg-blue-50 transition flex items-center justify-center gap-2"
                 >
                   Sign Up
-                </button>
+        </button>
               </div>
             </div>
           </div>

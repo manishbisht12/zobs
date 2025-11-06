@@ -51,7 +51,7 @@ export default function EmployerSettingsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Settings</h1>
           <p className="text-gray-600">Manage your employer account settings</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg">
+        <button className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition shadow-md hover:shadow-lg">
           <Save className="w-5 h-5" />
           Save Changes
         </button>
@@ -64,8 +64,8 @@ export default function EmployerSettingsPage() {
           return (
             <div key={idx} className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
               <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Icon className="w-5 h-5 text-blue-600" />
+                <div className="p-2 bg-gray-100 rounded-lg">
+                  <Icon className="w-5 h-5 text-gray-900" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">{section.title}</h2>
               </div>
@@ -91,10 +91,10 @@ export default function EmployerSettingsPage() {
                           }}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900"></div>
                       </label>
                     ) : field.type === 'select' ? (
-                      <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                      <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500">
                         {field.options.map((option, optIdx) => (
                           <option key={optIdx} selected={option === field.value}>
                             {option}
@@ -105,7 +105,7 @@ export default function EmployerSettingsPage() {
                       <input
                         type={field.type}
                         defaultValue={field.value}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
                       />
                     )}
                   </div>
@@ -118,14 +118,14 @@ export default function EmployerSettingsPage() {
         {/* Profile Settings */}
         <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-200">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <User className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <User className="w-5 h-5 text-gray-900" />
             </div>
             <h2 className="text-xl font-bold text-gray-900">Profile Settings</h2>
           </div>
 
           <div className="flex items-center gap-6 mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full flex items-center justify-center">
               <span className="text-white text-3xl font-bold">E</span>
             </div>
             <div className="flex-1">
@@ -150,7 +150,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="text"
                 defaultValue="Employer"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -160,7 +160,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="email"
                 defaultValue="employer@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -170,7 +170,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="password"
                 placeholder="Enter current password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -180,7 +180,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="password"
                 placeholder="Enter new password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -190,7 +190,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="password"
                 placeholder="Confirm new password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
           </div>

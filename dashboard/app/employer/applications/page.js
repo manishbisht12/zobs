@@ -74,7 +74,7 @@ export default function EmployerApplicationsPage() {
   const getStatusColor = (status) => {
     const colors = {
       Pending: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-      Reviewed: 'bg-blue-100 text-blue-700 border-blue-200',
+      Reviewed: 'bg-gray-100 text-gray-700 border-gray-200',
       Interview: 'bg-purple-100 text-purple-700 border-purple-200',
       Accepted: 'bg-green-100 text-green-700 border-green-200',
       Rejected: 'bg-red-100 text-red-700 border-red-200',
@@ -118,7 +118,7 @@ export default function EmployerApplicationsPage() {
           <input
             type="text"
             placeholder="Search applications..."
-            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
         </div>
         <div className="flex gap-2">
@@ -128,7 +128,7 @@ export default function EmployerApplicationsPage() {
               onClick={() => setFilterStatus(status)}
               className={`px-4 py-2 rounded-lg transition ${
                 filterStatus === status
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-gray-900 text-white'
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -146,8 +146,8 @@ export default function EmployerApplicationsPage() {
               <p className="text-sm text-gray-600 mb-1">Total Applications</p>
               <p className="text-2xl font-bold text-gray-900">156</p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <FileText className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-gray-100 rounded-lg">
+              <FileText className="w-6 h-6 text-gray-900" />
             </div>
           </div>
         </div>
@@ -198,7 +198,7 @@ export default function EmployerApplicationsPage() {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-white font-bold text-lg">{application.name.charAt(0)}</span>
                   </div>
                   <div>
@@ -267,7 +267,7 @@ export default function EmployerApplicationsPage() {
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50" disabled>
             Previous
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
+          <button className="px-4 py-2 bg-gray-900 text-white rounded-lg">1</button>
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">2</button>
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">3</button>
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">

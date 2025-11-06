@@ -1,9 +1,11 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, Filter, Plus, Eye, Edit, Trash2, DollarSign, MapPin, Clock, Users, MoreVertical } from 'lucide-react';
 
 export default function EmployerJobsPage() {
+  const router = useRouter();
   const jobs = [
     { id: 1, title: 'Senior Frontend Developer', applicants: 45, status: 'Active', salary: '$80K-$120K', location: 'Remote', posted: '2 days ago', views: 234 },
     { id: 2, title: 'Product Designer', applicants: 32, status: 'Active', salary: '$70K-$100K', location: 'New York', posted: '3 days ago', views: 189 },
@@ -21,7 +23,10 @@ export default function EmployerJobsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">My Job Postings</h1>
           <p className="text-gray-600">Manage your job listings and track their performance</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-md hover:shadow-lg">
+        <button 
+          onClick={() => router.push('/employer/jobs/post')}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition shadow-md hover:shadow-lg"
+        >
           <Plus className="w-5 h-5" />
           Post New Job
         </button>
@@ -34,7 +39,7 @@ export default function EmployerJobsPage() {
           <input
             type="text"
             placeholder="Search jobs..."
-            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
         </div>
         <button className="flex items-center gap-2 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -45,21 +50,21 @@ export default function EmployerJobsPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white">
-          <p className="text-sm opacity-90 mb-1">Total Jobs</p>
-          <p className="text-3xl font-bold">12</p>
+        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-md">
+          <p className="text-sm text-gray-600 mb-1">Total Jobs</p>
+          <p className="text-3xl font-bold text-gray-900">12</p>
         </div>
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white">
-          <p className="text-sm opacity-90 mb-1">Active Jobs</p>
-          <p className="text-3xl font-bold">9</p>
+        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-md">
+          <p className="text-sm text-gray-600 mb-1">Active Jobs</p>
+          <p className="text-3xl font-bold text-gray-900">9</p>
         </div>
-        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-4 text-white">
-          <p className="text-sm opacity-90 mb-1">Draft Jobs</p>
-          <p className="text-3xl font-bold">2</p>
+        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-md">
+          <p className="text-sm text-gray-600 mb-1">Draft Jobs</p>
+          <p className="text-3xl font-bold text-gray-900">2</p>
         </div>
-        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 text-white">
-          <p className="text-sm opacity-90 mb-1">Total Applicants</p>
-          <p className="text-3xl font-bold">317</p>
+        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-md">
+          <p className="text-sm text-gray-600 mb-1">Total Applicants</p>
+          <p className="text-3xl font-bold text-gray-900">317</p>
         </div>
       </div>
 
@@ -123,7 +128,7 @@ export default function EmployerJobsPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full flex items-center gap-1 w-fit">
+                    <span className="text-sm font-semibold text-gray-900 bg-gray-100 px-3 py-1 rounded-full flex items-center gap-1 w-fit">
                       <Users className="w-4 h-4" />
                       {job.applicants}
                     </span>
@@ -167,7 +172,7 @@ export default function EmployerJobsPage() {
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50" disabled>
             Previous
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
+          <button className="px-4 py-2 bg-gray-900 text-white rounded-lg">1</button>
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">2</button>
           <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
             Next

@@ -1,9 +1,11 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Briefcase, Users, Eye, TrendingUp, FileText, Clock, CheckCircle, XCircle, BarChart3 } from 'lucide-react';
 
 export default function EmployerDashboardPage() {
+  const router = useRouter();
   const stats = [
     { title: 'Active Jobs', value: '12', change: '+3', icon: Briefcase, color: 'blue' },
     { title: 'Total Applications', value: '156', change: '+24', icon: Users, color: 'green' },
@@ -38,10 +40,10 @@ export default function EmployerDashboardPage() {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           const colorClasses = {
-            blue: 'bg-blue-100 text-blue-600 border-blue-200',
-            green: 'bg-green-100 text-green-600 border-green-200',
-            purple: 'bg-purple-100 text-purple-600 border-purple-200',
-            orange: 'bg-orange-100 text-orange-600 border-orange-200',
+            blue: 'bg-gray-100 text-gray-900 border-gray-200',
+            green: 'bg-gray-100 text-gray-900 border-gray-200',
+            purple: 'bg-gray-100 text-gray-900 border-gray-200',
+            orange: 'bg-gray-100 text-gray-900 border-gray-200',
           };
           
           return (
@@ -70,7 +72,7 @@ export default function EmployerDashboardPage() {
         <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">Recent Job Postings</h2>
-            <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+            <button className="text-gray-900 hover:text-gray-700 font-medium text-sm">
               View All
             </button>
           </div>
@@ -80,8 +82,8 @@ export default function EmployerDashboardPage() {
                 key={job.id}
                 className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition border border-gray-100"
               >
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <Briefcase className="w-5 h-5 text-blue-600" />
+                <div className="p-3 bg-gray-100 rounded-lg">
+                  <Briefcase className="w-5 h-5 text-gray-900" />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-gray-900 font-medium mb-1">{job.title}</h3>
@@ -110,7 +112,7 @@ export default function EmployerDashboardPage() {
         <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">Recent Applications</h2>
-            <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+            <button className="text-gray-900 hover:text-gray-700 font-medium text-sm">
               View All
             </button>
           </div>
@@ -124,7 +126,7 @@ export default function EmployerDashboardPage() {
               };
               const statusColors = {
                 Pending: 'bg-yellow-100 text-yellow-700',
-                Reviewed: 'bg-blue-100 text-blue-700',
+                Reviewed: 'bg-gray-100 text-gray-700',
                 Interview: 'bg-green-100 text-green-700',
                 Rejected: 'bg-red-100 text-red-700',
               };
@@ -135,7 +137,7 @@ export default function EmployerDashboardPage() {
                   key={application.id}
                   className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition border border-gray-100"
                 >
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
                     <span className="text-white font-bold">{application.name.charAt(0)}</span>
                   </div>
                   <div className="flex-1">
@@ -160,27 +162,30 @@ export default function EmployerDashboardPage() {
       <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Briefcase className="w-5 h-5 text-blue-600" />
+          <button 
+            onClick={() => router.push('/employer/jobs/post')}
+            className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition"
+          >
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <Briefcase className="w-5 h-5 text-gray-900" />
             </div>
             <div className="text-left">
               <p className="font-semibold text-gray-900">Post New Job</p>
               <p className="text-sm text-gray-600">Create a new job listing</p>
             </div>
           </button>
-          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 transition">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Users className="w-5 h-5 text-green-600" />
+          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition">
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <Users className="w-5 h-5 text-gray-900" />
             </div>
             <div className="text-left">
               <p className="font-semibold text-gray-900">Review Applications</p>
               <p className="text-sm text-gray-600">View pending applications</p>
             </div>
           </button>
-          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <BarChart3 className="w-5 h-5 text-purple-600" />
+          <button className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition">
+            <div className="p-2 bg-gray-100 rounded-lg">
+              <BarChart3 className="w-5 h-5 text-gray-900" />
             </div>
             <div className="text-left">
               <p className="font-semibold text-gray-900">View Analytics</p>

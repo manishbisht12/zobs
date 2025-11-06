@@ -70,7 +70,7 @@ export default function EmployerSidebar() {
               onClick={() => setIsCollapsed(!isCollapsed)}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-700 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-xl">Z</span>
               </div>
               {!isCollapsed && (
@@ -83,8 +83,9 @@ export default function EmployerSidebar() {
           <nav className={`flex-1 space-y-2 overflow-y-auto transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-4'}`}>
             {menuItems.map((item) => {
               const Icon = item.icon;
-              // Only highlight exact path matches to prevent multiple highlights
-              const isActive = pathname === item.path;
+              // Check if pathname matches exactly or starts with the item path
+              // This allows sub-routes like /employer/jobs/post to highlight the Jobs menu
+              const isActive = pathname === item.path || pathname?.startsWith(item.path + '/');
               
               return (
                 <Link
@@ -95,7 +96,7 @@ export default function EmployerSidebar() {
                     flex items-center rounded-xl
                     transition-all duration-200 group relative
                     ${isActive 
-                      ? 'bg-blue-600 text-white shadow-lg' 
+                      ? 'bg-gray-900 text-white shadow-lg' 
                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                     }
                     ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3 gap-3'}
@@ -115,7 +116,7 @@ export default function EmployerSidebar() {
           {/* User Section */}
           <div className={`border-t border-gray-200 transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-4'}`}>
             <div className={`flex items-center rounded-xl bg-gray-50 border border-gray-200 mb-3 ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3 gap-3'}`}>
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-sm">E</span>
               </div>
               {!isCollapsed && (

@@ -17,7 +17,7 @@ export default function EmployerLoginPage() {
       title="Employer Login"
       subtitle="Access your employer dashboard"
       icon={Briefcase}
-      theme="blue"
+      theme="gray"
       redirectPath="/employer/dashboard"
       signupPath="/employer/signup"
     />

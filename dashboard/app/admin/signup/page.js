@@ -87,17 +87,17 @@ export default function AdminSignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-xl">
-              <span className="text-gray-900 font-bold text-4xl">Z</span>
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl flex items-center justify-center shadow-xl">
+              <span className="text-white font-bold text-4xl">Z</span>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Signup</h1>
-          <p className="text-gray-300">Create your administrative account</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Signup</h1>
+          <p className="text-gray-600">Create your administrative account</p>
         </div>
 
         {/* Signup Form */}
@@ -125,7 +125,7 @@ export default function AdminSignupPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Enter your full name"
@@ -153,7 +153,7 @@ export default function AdminSignupPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="admin@example.com"
@@ -181,7 +181,7 @@ export default function AdminSignupPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 transition ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Create a password"
@@ -220,7 +220,7 @@ export default function AdminSignupPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 transition ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Confirm your password"
@@ -249,11 +249,11 @@ export default function AdminSignupPage() {
               <p className="text-xs font-semibold text-gray-900 mb-2">Password Requirements:</p>
               <ul className="text-xs text-gray-700 space-y-1">
                 <li className="flex items-center gap-2">
-                  <Check className="h-3 w-3 text-gray-600" />
+                  <Check className="h-3 w-3 text-gray-900" />
                   At least 6 characters long
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="h-3 w-3 text-gray-600" />
+                  <Check className="h-3 w-3 text-gray-900" />
                   Strong and unique password
                 </li>
               </ul>
@@ -263,7 +263,7 @@ export default function AdminSignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white font-semibold py-3 px-4 rounded-xl hover:from-gray-800 hover:to-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 ${
+              className={`w-full bg-gray-900 text-white font-semibold py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 ${
                 isLoading ? 'opacity-75 cursor-not-allowed' : ''
               }`}
             >
@@ -300,7 +300,7 @@ export default function AdminSignupPage() {
         <div className="mt-6 text-center">
           <button
             onClick={() => router.push('/')}
-            className="text-sm text-gray-300 hover:text-white transition"
+            className="text-sm text-gray-600 hover:text-gray-900 transition"
           >
             ← Back to Home
           </button>

@@ -94,12 +94,12 @@ export default function EmployerSignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center shadow-xl">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-900 to-gray-700 rounded-2xl flex items-center justify-center shadow-xl">
               <span className="text-white font-bold text-4xl">Z</span>
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function EmployerSignupPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Enter your full name"
@@ -160,7 +160,7 @@ export default function EmployerSignupPage() {
                   name="company"
                   value={formData.company}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.company ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Enter your company name"
@@ -188,7 +188,7 @@ export default function EmployerSignupPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="employer@example.com"
@@ -216,7 +216,7 @@ export default function EmployerSignupPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Create a password"
@@ -255,7 +255,7 @@ export default function EmployerSignupPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Confirm your password"
@@ -280,15 +280,15 @@ export default function EmployerSignupPage() {
             </div>
 
             {/* Password Requirements */}
-            <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-              <p className="text-xs font-semibold text-blue-900 mb-2">Password Requirements:</p>
-              <ul className="text-xs text-blue-800 space-y-1">
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <p className="text-xs font-semibold text-gray-900 mb-2">Password Requirements:</p>
+              <ul className="text-xs text-gray-700 space-y-1">
                 <li className="flex items-center gap-2">
-                  <Check className="h-3 w-3 text-blue-600" />
+                  <Check className="h-3 w-3 text-gray-900" />
                   At least 6 characters long
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check className="h-3 w-3 text-blue-600" />
+                  <Check className="h-3 w-3 text-gray-900" />
                   Strong and unique password
                 </li>
               </ul>
@@ -298,7 +298,7 @@ export default function EmployerSignupPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 ${
+              className={`w-full bg-gray-900 text-white font-semibold py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 ${
                 isLoading ? 'opacity-75 cursor-not-allowed' : ''
               }`}
             >
@@ -323,7 +323,7 @@ export default function EmployerSignupPage() {
               Already have an employer account?{' '}
               <button
                 onClick={() => router.push('/employer/login')}
-                className="font-semibold text-blue-600 hover:text-blue-700 transition"
+                className="font-semibold text-gray-900 hover:text-gray-700 transition"
               >
                 Sign In
               </button>

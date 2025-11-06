@@ -17,7 +17,7 @@ export default function AdminLoginPage() {
       title="Admin Login"
       subtitle="Access the administrative dashboard"
       icon={Shield}
-      theme="dark"
+      theme="gray"
       redirectPath="/admin/dashboard"
       signupPath="/admin/signup"
     />

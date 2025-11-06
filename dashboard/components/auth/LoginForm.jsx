@@ -74,19 +74,26 @@ export default function LoginForm({
   };
 
   const isDark = theme === 'dark';
+  const isGray = theme === 'gray';
   const bgGradient = isDark 
     ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'
+    : isGray
+    ? 'bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100'
     : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50';
   const logoBg = isDark
     ? 'bg-white'
+    : isGray
+    ? 'bg-gradient-to-br from-gray-900 to-gray-700'
     : 'bg-gradient-to-br from-blue-600 to-blue-800';
   const logoText = isDark ? 'text-gray-900' : 'text-white';
   const titleColor = isDark ? 'text-white' : 'text-gray-900';
   const subtitleColor = isDark ? 'text-gray-300' : 'text-gray-600';
   const buttonBg = isDark
     ? 'bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700'
+    : isGray
+    ? 'bg-gray-900 hover:bg-gray-800'
     : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700';
-  const linkColor = isDark ? 'text-gray-900 hover:text-gray-700' : 'text-blue-600 hover:text-blue-700';
+  const linkColor = isDark ? 'text-gray-900 hover:text-gray-700' : isGray ? 'text-gray-900 hover:text-gray-700' : 'text-blue-600 hover:text-blue-700';
   const backLinkColor = isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900';
 
   return (
@@ -125,7 +132,7 @@ export default function LoginForm({
                   value={formData.email}
                   onChange={handleInputChange}
                   className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-gray-900' : 'focus:ring-blue-500'
+                    theme === 'dark' ? 'focus:ring-gray-900' : theme === 'gray' ? 'focus:ring-gray-500' : 'focus:ring-blue-500'
                   } transition ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
@@ -154,7 +161,7 @@ export default function LoginForm({
                   value={formData.password}
                   onChange={handleInputChange}
                   className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-gray-900' : 'focus:ring-blue-500'
+                    theme === 'dark' ? 'focus:ring-gray-900' : theme === 'gray' ? 'focus:ring-gray-500' : 'focus:ring-blue-500'
                   } transition ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
@@ -188,7 +195,7 @@ export default function LoginForm({
               type="submit"
               disabled={isLoading}
               className={`w-full ${buttonBg} text-white font-semibold py-3 px-4 rounded-xl focus:outline-none focus:ring-2 ${
-                theme === 'dark' ? 'focus:ring-gray-900' : 'focus:ring-blue-500'
+                theme === 'dark' ? 'focus:ring-gray-900' : theme === 'gray' ? 'focus:ring-gray-500' : 'focus:ring-blue-500'
               } focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 ${
                 isLoading ? 'opacity-75 cursor-not-allowed' : ''
               }`}

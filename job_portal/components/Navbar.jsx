@@ -3,15 +3,17 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { Bookmark, MessageSquare, User } from "lucide-react";
+import { Bookmark, MessageSquare, User, LogOut } from "lucide-react";
 import BookmarksDropdown from "./BookmarksDropdown";
 import { useJobs } from "../app/contexts/JobsContext";
+import { useAuth } from "../app/contexts/AuthContext";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [showBookmarks, setShowBookmarks] = useState(false);
   const { hasNewBookmark, clearNotification, bookmarkedJobs } = useJobs();
+  const { logout, isAuthenticated } = useAuth();
 
   const handleLogin = () => router.push("/Login");
   const handleSignup = () => router.push("/Signup");
@@ -23,6 +25,11 @@ export default function Navbar() {
     if (!showBookmarks && hasNewBookmark) {
       clearNotification(); // Clear notification when opening dropdown
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
   };
 
   // Only show login/signup on specific pages (e.g., home "/")
@@ -85,34 +92,45 @@ export default function Navbar() {
 
             ) : (
               <>
-                {/* Icons with tooltip */}
-                <div className="relative">
+                {/* Main Icons and Buttons */}
+                <div className="flex items-center space-x-6">
+                  {/* Icons with tooltip */}
                   <div className="relative">
-                    <IconWithTooltip Icon={Bookmark} label="Bookmarks" onClick={handleBookmarkClick} />
-                    {hasNewBookmark && bookmarkedJobs.length > 0 && (
-                      <span 
-                        className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center cursor-pointer"
-                        onClick={handleBookmarkClick}
-                      >
-                        {bookmarkedJobs.length}
-                      </span>
-                    )}
+                    <div className="relative">
+                      <IconWithTooltip Icon={Bookmark} label="Bookmarks" onClick={handleBookmarkClick} />
+                      {hasNewBookmark && bookmarkedJobs.length > 0 && (
+                        <span 
+                          className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center cursor-pointer"
+                          onClick={handleBookmarkClick}
+                        >
+                          {bookmarkedJobs.length}
+                        </span>
+                      )}
+                    </div>
+                    <BookmarksDropdown isOpen={showBookmarks} onClose={() => setShowBookmarks(false)} />
                   </div>
-                  <BookmarksDropdown isOpen={showBookmarks} onClose={() => setShowBookmarks(false)} />
+                  <IconWithTooltip Icon={MessageSquare} label="Messages" />
+                  <IconWithTooltip Icon={User} label="Profile" onClick={handleProfile} />
+
+                  {/* Vertical Divider */}
+                  <div className="border-l h-6 border-gray-300"></div>
+
+                  {/* Employers / Post Job */}
+                  <span
+                    onClick={handleEmployer}
+                    className="text-gray-700 font-medium cursor-pointer hover:text-blue-600"
+                  >
+                    Employers / Post Job
+                  </span>
                 </div>
-                <IconWithTooltip Icon={MessageSquare} label="Messages" />
-                <IconWithTooltip Icon={User} label="Profile" onClick={handleProfile} />
 
-                {/* Vertical Divider */}
-                <div className="border-l h-6 border-gray-300"></div>
-
-                {/* Employers / Post Job */}
-                <span
-                  onClick={handleEmployer}
-                  className="text-gray-700 font-medium cursor-pointer hover:text-blue-600"
-                >
-                  Employers / Post Job
-                </span>
+                {/* Logout Icon - Pushed to far right */}
+                {isAuthenticated && (
+                  <div className="flex items-center ml-auto">
+                    <div className="border-l h-6 border-gray-300 mr-6"></div>
+                    <IconWithTooltip Icon={LogOut} label="Logout" onClick={handleLogout} />
+                  </div>
+                )}
               </>
             )}
           </div>

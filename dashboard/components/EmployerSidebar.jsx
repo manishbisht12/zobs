@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
-  Users, 
+  FileText, 
   Briefcase, 
   BarChart3, 
   Settings, 
@@ -16,14 +16,14 @@ import {
 import { useState } from 'react';
 
 const menuItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-  { name: 'Users', icon: Users, path: '/admin/dashboard/users' },
-  { name: 'Jobs', icon: Briefcase, path: '/admin/dashboard/jobs' },
-  { name: 'Analytics', icon: BarChart3, path: '/admin/dashboard/analytics' },
-  { name: 'Settings', icon: Settings, path: '/admin/dashboard/settings' },
+  { name: 'Dashboard', icon: LayoutDashboard, path: '/employer/dashboard' },
+  { name: 'Jobs', icon: Briefcase, path: '/employer/jobs' },
+  { name: 'Applications', icon: FileText, path: '/employer/applications' },
+  { name: 'Analytics', icon: BarChart3, path: '/employer/analytics' },
+  { name: 'Settings', icon: Settings, path: '/employer/settings' },
 ];
 
-export default function Sidebar() {
+export default function EmployerSidebar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -70,7 +70,7 @@ export default function Sidebar() {
               onClick={() => setIsCollapsed(!isCollapsed)}
               title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-700 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-xl">Z</span>
               </div>
               {!isCollapsed && (
@@ -95,7 +95,7 @@ export default function Sidebar() {
                     flex items-center rounded-xl
                     transition-all duration-200 group relative
                     ${isActive 
-                      ? 'bg-gray-900 text-white shadow-lg' 
+                      ? 'bg-blue-600 text-white shadow-lg' 
                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                     }
                     ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3 gap-3'}
@@ -115,13 +115,13 @@ export default function Sidebar() {
           {/* User Section */}
           <div className={`border-t border-gray-200 transition-all duration-300 ${isCollapsed ? 'p-2' : 'p-4'}`}>
             <div className={`flex items-center rounded-xl bg-gray-50 border border-gray-200 mb-3 ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3 gap-3'}`}>
-              <div className="w-10 h-10 bg-gradient-to-br from-gray-900 to-gray-700 rounded-full flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-sm">E</span>
               </div>
               {!isCollapsed && (
                 <div>
-                  <p className="text-gray-900 font-medium text-sm">Admin User</p>
-                  <p className="text-gray-500 text-xs">admin@example.com</p>
+                  <p className="text-gray-900 font-medium text-sm">Employer</p>
+                  <p className="text-gray-500 text-xs">employer@example.com</p>
                 </div>
               )}
             </div>

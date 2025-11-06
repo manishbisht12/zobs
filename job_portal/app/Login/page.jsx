@@ -4,9 +4,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -56,13 +59,30 @@ export default function LoginPage() {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Login data:', formData);
-      // Redirect to jobs page after successful login
-      router.push('/jobs');
+    try {
+      const result = await login(formData.email, formData.password);
+      
+      if (result.success) {
+        toast.success('Login successful! Welcome back.');
+        // Redirect to jobs page after successful login
+        router.push('/jobs');
+      } else {
+        toast.error(result.message || 'Login failed. Please try again.');
+        // Set error message for display
+        setErrors({ 
+          ...errors, 
+          general: result.message || 'Invalid email or password' 
+        });
+      }
+    } catch (error) {
+      toast.error('An error occurred. Please try again.');
+      setErrors({ 
+        ...errors, 
+        general: 'An unexpected error occurred' 
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -87,6 +107,12 @@ export default function LoginPage() {
         {/* Login Form */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* General Error Message */}
+            {errors.general && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <p className="text-sm font-medium">{errors.general}</p>
+              </div>
+            )}
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">

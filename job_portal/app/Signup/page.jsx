@@ -4,9 +4,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import Image from 'next/image';
+import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 export default function SignupPage() {
   const router = useRouter();
+  const { signup } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -65,13 +68,37 @@ export default function SignupPage() {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Signup data:', formData);
-      // Redirect to jobs page after successful signup
-      router.push('/jobs');
+    try {
+      const result = await signup(formData.name, formData.email, formData.password);
+      
+      if (result.success) {
+        toast.success('Account created successfully! Welcome to Zobs.');
+        // Redirect to jobs page after successful signup
+        router.push('/jobs');
+      } else {
+        toast.error(result.message || 'Signup failed. Please try again.');
+        // Set error message for display
+        if (result.message?.includes('email')) {
+          setErrors({ 
+            ...errors, 
+            email: result.message 
+          });
+        } else {
+          setErrors({ 
+            ...errors, 
+            general: result.message || 'Signup failed' 
+          });
+        }
+      }
+    } catch (error) {
+      toast.error('An error occurred. Please try again.');
+      setErrors({ 
+        ...errors, 
+        general: 'An unexpected error occurred' 
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -96,6 +123,12 @@ export default function SignupPage() {
         {/* Signup Form */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* General Error Message */}
+            {errors.general && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                <p className="text-sm font-medium">{errors.general}</p>
+              </div>
+            )}
             {/* Name Field */}
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">

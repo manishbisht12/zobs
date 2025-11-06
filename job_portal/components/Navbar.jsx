@@ -18,7 +18,6 @@ export default function Navbar() {
   const handleLogin = () => router.push("/Login");
   const handleSignup = () => router.push("/Signup");
   const handleProfile = () => router.push("/Profile");
-  const handleEmployer = () => router.push("/Employer");
   const handleLogoClick = () => router.push("/"); // Logo click
   const handleBookmarkClick = () => {
     setShowBookmarks(!showBookmarks);
@@ -112,16 +111,6 @@ export default function Navbar() {
                   <IconWithTooltip Icon={MessageSquare} label="Messages" />
                   <IconWithTooltip Icon={User} label="Profile" onClick={handleProfile} />
 
-                  {/* Vertical Divider */}
-                  <div className="border-l h-6 border-gray-300"></div>
-
-                  {/* Employers / Post Job */}
-                  <span
-                    onClick={handleEmployer}
-                    className="text-gray-700 font-medium cursor-pointer hover:text-blue-600"
-                  >
-                    Employers / Post Job
-                  </span>
                 </div>
 
                 {/* Logout Icon - Pushed to far right */}

@@ -53,15 +53,6 @@ export default function Hero() {
 
             </div>
 
-            {/* CTA */}
-            <div className="flex items-center space-x-4">
-             <button className="bg-[#4D46D9] text-white font-semibold px-8 py-3 rounded-lg hover:bg-[#3F38C6] transition-colors duration-200 flex items-center space-x-2">
-  <FiBriefcase className="w-5 h-5" />
-  <span>Post a Job</span>
-</button>
-
-              <p className="text-sm text-gray-600">Are you an employer?</p>
-            </div>
           </div>
 
           {/* Right Illustration */}

@@ -32,16 +32,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* For Employers */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">For Employers</h3>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Post a Job</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Browse Candidates</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Employer Resources</a></li>
-            </ul>
-          </div>
 
           {/* Company */}
           <div>

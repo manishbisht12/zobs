@@ -73,7 +73,7 @@ import Home from "../../components/Home";
 import { Filter, X } from "lucide-react";
 
 export default function Jobs() {
-  const { jobs } = useJobs();
+  const { jobs, loading, error } = useJobs();
   const [selectedJobId, setSelectedJobId] = useState(jobs && jobs[0] ? jobs[0].id : null);
   
   // Filter states
@@ -134,14 +134,17 @@ export default function Jobs() {
 
       // Salary range filter
       const matchesSalary = salaryRangeFilter === "" || (() => {
-        const salaryString = job.salary || job.salaryRange || "";
-        const salary = parseInt(salaryString.replace(/[^0-9]/g, '') || '0');
+        // Use salaryMin if available, otherwise try to parse from salary string
+        const salaryMin = job.salaryMin || (() => {
+          const salaryString = job.salary || job.salaryRange || "";
+          return parseInt(salaryString.replace(/[^0-9]/g, '') || '0');
+        })();
         
         switch(salaryRangeFilter) {
-          case "0-50k": return salary > 0 && salary < 50000;
-          case "50k-100k": return salary >= 50000 && salary < 100000;
-          case "100k-150k": return salary >= 100000 && salary < 150000;
-          case "150k+": return salary >= 150000;
+          case "0-50k": return salaryMin > 0 && salaryMin < 50000;
+          case "50k-100k": return salaryMin >= 50000 && salaryMin < 100000;
+          case "100k-150k": return salaryMin >= 100000 && salaryMin < 150000;
+          case "150k+": return salaryMin >= 150000;
           default: return true;
         }
       })();
@@ -271,7 +274,17 @@ export default function Jobs() {
         {/* Jobs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-4">
-            {filteredJobs && filteredJobs.length > 0 ? (
+            {loading ? (
+              <div className="py-20 text-center text-gray-600 bg-white rounded-lg shadow-md">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-lg font-semibold">Loading jobs...</p>
+              </div>
+            ) : error ? (
+              <div className="py-20 text-center text-gray-600 bg-white rounded-lg shadow-md">
+                <p className="mb-4 text-lg font-semibold text-red-600">Error loading jobs</p>
+                <p>{error}</p>
+              </div>
+            ) : filteredJobs && filteredJobs.length > 0 ? (
               filteredJobs.map((job) => (
                 <JobCard
                   key={job.id}

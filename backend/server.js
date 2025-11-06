@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import employerAuthRoutes from './employer/routes/authRoutes.js';
 import employerJobRoutes from './employer/routes/jobRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,9 @@ app.use('/api/employer/auth', employerAuthRoutes);
 
 // Employer Job Routes
 app.use('/api/employer/jobs', employerJobRoutes);
+
+// Public Job Routes (for job portal)
+app.use('/api/jobs', jobRoutes);
 
 
 // Start Server

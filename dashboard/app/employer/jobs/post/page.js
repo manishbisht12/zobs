@@ -13,6 +13,8 @@ import {
   Save,
   CheckCircle
 } from 'lucide-react';
+import api from '../../../../utils/api';
+import { toast } from 'react-toastify';
 
 export default function PostJobPage() {
   const [step, setStep] = useState(1);
@@ -109,45 +111,149 @@ export default function PostJobPage() {
     setIsSubmitting(true);
     
     try {
-      // TODO: Replace with actual API call
-      // Example API call:
-      // const response = await fetch('/api/jobs', {
-      //   method: 'POST',
-      //   headers: { 
-      //     'Content-Type': 'application/json',
-      //     'Authorization': `Bearer ${token}`
-      //   },
-      //   body: JSON.stringify(formData)
-      // });
-      // const data = await response.json();
+      // Show loading toast
+      const loadingToast = toast.loading('Posting your job...', {
+        position: "top-right",
+      });
+
+      // Prepare job data for API
+      const jobData = {
+        jobTitle: formData.jobTitle,
+        companyName: formData.companyName,
+        location: formData.location,
+        jobType: formData.jobType,
+        workplaceType: formData.workplaceType,
+        experience: formData.experience,
+        salaryMin: formData.salaryMin ? Number(formData.salaryMin) : null,
+        salaryMax: formData.salaryMax ? Number(formData.salaryMax) : null,
+        currency: formData.currency,
+        category: formData.category,
+        skills: formData.skills,
+        description: formData.description,
+        responsibilities: formData.responsibilities,
+        requirements: formData.requirements,
+        benefits: formData.benefits,
+        contactEmail: formData.contactEmail,
+        contactPhone: formData.contactPhone,
+        companyWebsite: formData.companyWebsite,
+        applicationDeadline: formData.applicationDeadline || null,
+        numberOfOpenings: formData.numberOfOpenings ? Number(formData.numberOfOpenings) : 1,
+        status: 'active', // Default to active when posting
+      };
+
+      // Make API call
+      const response = await api.post('/employer/jobs', jobData);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Show success message
-      alert('Job posted successfully!');
-      
-      // Navigate back to jobs listing
-      router.push('/employer/jobs');
+      if (response.data.success) {
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success('Job posted successfully!', {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        
+        // Navigate back to jobs listing
+        router.push('/employer/jobs');
+      } else {
+        toast.dismiss(loadingToast);
+        throw new Error(response.data.message || 'Failed to post job');
+      }
     } catch (error) {
       console.error('Failed to post job:', error);
-      alert('Failed to post job. Please try again.');
+      
+      // Handle different error types
+      let errorMessage = 'Failed to post job. Please try again.';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      // Show error toast
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleSaveDraft = () => {
-    // Save draft to localStorage
+  const handleSaveDraft = async () => {
+    // For draft, we need minimum required fields for backend validation
+    if (!formData.jobTitle.trim() || !formData.companyName.trim() || !formData.location.trim()) {
+      alert('Please fill in at least Job Title, Company Name, and Location to save as draft.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    
     try {
-      localStorage.setItem('jobDraft', JSON.stringify({
-        ...formData,
-        savedAt: new Date().toISOString()
-      }));
-      alert('Draft saved successfully!');
+      // Get user email from localStorage for contact email if not provided
+      const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('user') || '{}') : {};
+      const defaultEmail = user.email || 'employer@example.com';
+
+      const jobData = {
+        jobTitle: formData.jobTitle,
+        companyName: formData.companyName,
+        location: formData.location,
+        jobType: formData.jobType,
+        workplaceType: formData.workplaceType,
+        experience: formData.experience,
+        salaryMin: formData.salaryMin ? Number(formData.salaryMin) : null,
+        salaryMax: formData.salaryMax ? Number(formData.salaryMax) : null,
+        currency: formData.currency,
+        category: formData.category || '',
+        skills: formData.skills || '',
+        description: formData.description || 'Draft - description will be added later',
+        responsibilities: formData.responsibilities || '',
+        requirements: formData.requirements || '',
+        benefits: formData.benefits || '',
+        contactEmail: formData.contactEmail || defaultEmail,
+        contactPhone: formData.contactPhone || '',
+        companyWebsite: formData.companyWebsite || '',
+        applicationDeadline: formData.applicationDeadline || null,
+        numberOfOpenings: formData.numberOfOpenings ? Number(formData.numberOfOpenings) : 1,
+        status: 'draft', // Save as draft
+      };
+
+      // Show loading toast
+      const loadingToast = toast.loading('Saving draft...', {
+        position: "top-right",
+      });
+
+      const response = await api.post('/employer/jobs', jobData);
+      
+      if (response.data.success) {
+        toast.dismiss(loadingToast);
+        toast.success('Draft saved successfully!', {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        toast.dismiss(loadingToast);
+        throw new Error(response.data.message || 'Failed to save draft');
+      }
     } catch (error) {
       console.error('Failed to save draft:', error);
-      alert('Failed to save draft.');
+      
+      // Fallback to localStorage if API fails
+      try {
+        localStorage.setItem('jobDraft', JSON.stringify({
+          ...formData,
+          savedAt: new Date().toISOString()
+        }));
+        toast.info('Draft saved locally!', {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } catch (localError) {
+        toast.error('Failed to save draft.', {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -177,9 +283,9 @@ export default function PostJobPage() {
       {/* Step Indicator */}
       <div className="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <div className="flex items-center gap-4">
-          <div className={`flex items-center gap-2 ${step === 1 ? 'text-gray-900' : 'text-gray-700'}`}>
+          <div className={`flex items-center gap-2 ${step === 1 ? 'text-gray-900' : 'text-green-600'}`}>
             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all ${
-              step === 1 ? 'bg-gray-900 text-white' : 'bg-gray-700 text-white'
+              step === 1 ? 'bg-gray-900 text-white' : 'bg-green-600 text-white'
             }`}>
               {step === 1 ? '1' : <CheckCircle className="w-6 h-6" />}
             </div>

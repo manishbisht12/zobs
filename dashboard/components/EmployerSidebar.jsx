@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -14,6 +14,8 @@ import {
   X
 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { clearAuth } from '../utils/auth';
 
 const menuItems = [
   { name: 'Dashboard', icon: LayoutDashboard, path: '/employer/dashboard' },
@@ -25,8 +27,23 @@ const menuItems = [
 
 export default function EmployerSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleLogout = () => {
+    // Clear JWT token and user data using auth utility
+    clearAuth();
+    
+    // Show success toast
+    toast.success('Logged out successfully!', {
+      position: "top-right",
+      autoClose: 2000,
+    });
+    
+    // Redirect to home page
+    router.push('/');
+  };
 
   return (
     <>
@@ -127,7 +144,10 @@ export default function EmployerSidebar() {
               )}
             </div>
             
-            <button className={`flex items-center rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all w-full group ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3 gap-3'}`}>
+            <button 
+              onClick={handleLogout}
+              className={`flex items-center rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all w-full group ${isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3 gap-3'}`}
+            >
               <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {!isCollapsed && <span className="font-medium whitespace-nowrap">Logout</span>}
             </button>

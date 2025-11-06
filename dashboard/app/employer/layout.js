@@ -3,10 +3,14 @@
 import { usePathname } from 'next/navigation';
 import EmployerSidebar from "../../components/EmployerSidebar";
 import Breadcrumb from "../../components/Breadcrumb";
+import { useAuthCheck } from "../../middleware/authCheck";
 
 export default function EmployerLayout({ children }) {
   const pathname = usePathname();
   const isAuthPage = pathname?.includes('/login') || pathname?.includes('/signup');
+
+  // Check authentication for protected routes (hook must be called unconditionally)
+  useAuthCheck();
 
   if (isAuthPage) {
     return <>{children}</>;

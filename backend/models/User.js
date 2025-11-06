@@ -21,6 +21,92 @@ const userSchema = new mongoose.Schema({
     minlength: [6, 'Password must be at least 6 characters'],
     select: false, // Don't return password by default
   },
+  role: {
+    type: String,
+    enum: ['admin', 'jobseeker'],
+    default: 'jobseeker',
+  },
+  // Job Seeker specific fields
+  phone: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  address: {
+    street: { type: String, trim: true, default: '' },
+    city: { type: String, trim: true, default: '' },
+    state: { type: String, trim: true, default: '' },
+    zipCode: { type: String, trim: true, default: '' },
+    country: { type: String, trim: true, default: '' },
+  },
+  dateOfBirth: {
+    type: Date,
+    default: null,
+  },
+  profileImage: {
+    type: String,
+    default: '',
+  },
+  bio: {
+    type: String,
+    trim: true,
+    default: '',
+    maxlength: [500, 'Bio cannot exceed 500 characters'],
+  },
+  skills: {
+    type: [String],
+    default: [],
+  },
+  experience: {
+    type: String,
+    enum: ['entry', 'mid', 'senior', 'lead'],
+    default: 'entry',
+  },
+  education: [{
+    degree: { type: String, trim: true },
+    institution: { type: String, trim: true },
+    field: { type: String, trim: true },
+    startDate: { type: Date },
+    endDate: { type: Date },
+    isCurrent: { type: Boolean, default: false },
+  }],
+  workExperience: [{
+    title: { type: String, trim: true },
+    company: { type: String, trim: true },
+    location: { type: String, trim: true },
+    startDate: { type: Date },
+    endDate: { type: Date },
+    isCurrent: { type: Boolean, default: false },
+    description: { type: String, trim: true },
+  }],
+  resume: {
+    type: String,
+    default: '',
+  },
+  linkedIn: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  portfolio: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  // Status fields
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  // Admin specific fields (only used when role is 'admin')
+  permissions: {
+    type: [String],
+    default: [],
+  },
 }, {
   timestamps: true,
 });

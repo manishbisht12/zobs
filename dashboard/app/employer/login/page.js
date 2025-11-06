@@ -2,13 +2,64 @@
 
 import { Briefcase } from 'lucide-react';
 import LoginForm from '../../../components/auth/LoginForm';
+import api from '../../../utils/api';
+import { toast } from 'react-toastify';
+import { setAuth } from '../../../utils/auth';
 
 export default function EmployerLoginPage() {
-  const handleLogin = async () => {
-    // TODO: Implement actual API call for employer login
-    return new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
+  const handleLogin = async (email, password) => {
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Logging in...', {
+        position: "top-right",
+      });
+
+      // Make API call to login endpoint
+      const response = await api.post('/employer/auth/login', { email, password });
+      
+      if (response.data.success && response.data.data) {
+        // Extract JWT token and user data from response
+        const { token, user } = response.data.data;
+        
+        // Validate token exists
+        if (!token) {
+          toast.dismiss(loadingToast);
+          toast.error('Login failed: No token received', {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          return { success: false, message: 'No token received from server' };
+        }
+        
+        // Save JWT token and user data using auth utility
+        setAuth(token, user);
+        
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success('Login successful! Redirecting...', {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        
+        return { success: true };
+      } else {
+        toast.dismiss(loadingToast);
+        return { success: false, message: response.data.message || 'Login failed' };
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      // Show error toast
+      toast.error(error.message || 'Login failed. Please check your credentials.', {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      
+      return { 
+        success: false, 
+        message: error.message || 'Login failed. Please check your credentials.' 
+      };
+    }
   };
 
   return (

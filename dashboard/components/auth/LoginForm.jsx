@@ -63,11 +63,19 @@ export default function LoginForm({
     setIsLoading(true);
     
     try {
-      await onSubmit();
-      router.push(redirectPath);
+      const result = await onSubmit(formData.email, formData.password);
+      
+      if (result && result.success) {
+        router.push(redirectPath);
+      } else {
+        setErrors({ 
+          general: result?.message || 'An error occurred. Please try again.' 
+        });
+        setIsLoading(false);
+      }
     } catch (error) {
       setErrors({ 
-        general: 'An error occurred. Please try again.' 
+        general: error.message || 'An error occurred. Please try again.' 
       });
       setIsLoading(false);
     }

@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
+import employerAuthRoutes from './employer/routes/authRoutes.js';
+import employerJobRoutes from './employer/routes/jobRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -24,8 +26,14 @@ app.get('/', (req, res) => {
   });
 });
 
-// Auth Routes
+// Auth Routes (General)
 app.use('/api/auth', authRoutes);
+
+// Employer Auth Routes
+app.use('/api/employer/auth', employerAuthRoutes);
+
+// Employer Job Routes
+app.use('/api/employer/jobs', employerJobRoutes);
 
 
 // Start Server

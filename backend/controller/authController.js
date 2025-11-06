@@ -32,11 +32,12 @@ const signup = async (req, res) => {
       });
     }
 
-    // Create user
+    // Create user (default role is 'jobseeker')
     const user = await User.create({
       name,
       email,
       password,
+      role: 'jobseeker', // Default role for general signup
     });
 
     // Generate token
@@ -50,6 +51,7 @@ const signup = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
         },
         token,
       },
@@ -88,6 +90,14 @@ const login = async (req, res) => {
       });
     }
 
+    // Check if user is active
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been deactivated. Please contact support.',
+      });
+    }
+
     // Check password
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) {
@@ -108,6 +118,7 @@ const login = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
         },
         token,
       },
@@ -143,6 +154,15 @@ const getMe = async (req, res) => {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
+          phone: user.phone,
+          address: user.address,
+          profileImage: user.profileImage,
+          bio: user.bio,
+          skills: user.skills,
+          experience: user.experience,
+          isVerified: user.isVerified,
+          isActive: user.isActive,
         },
       },
     });

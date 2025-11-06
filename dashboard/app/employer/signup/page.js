@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Briefcase, Check, Building2 } from 'lucide-react';
+import api from '../../../utils/api';
+import { toast } from 'react-toastify';
+import { setAuth } from '../../../utils/auth';
 
 export default function EmployerSignupPage() {
   const router = useRouter();
@@ -79,16 +82,65 @@ export default function EmployerSignupPage() {
     setIsLoading(true);
     
     try {
-      // TODO: Implement actual API call for employer signup
-      // For now, simulate signup
-      setTimeout(() => {
+      // Show loading toast
+      const loadingToast = toast.loading('Creating your account...', {
+        position: "top-right",
+      });
+
+      // Make API call for employer signup
+      const response = await api.post('/employer/auth/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      
+      if (response.data.success && response.data.data) {
+        // Extract JWT token and user data from response
+        const { token, user } = response.data.data;
+        
+        // Validate token exists
+        if (!token) {
+          toast.dismiss(loadingToast);
+          toast.error('Signup failed: No token received', {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          setIsLoading(false);
+          return;
+        }
+        
+        // Save JWT token and user data using auth utility
+        setAuth(token, user);
+        
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success('Account created successfully! Redirecting...', {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        
         setIsLoading(false);
         router.push('/employer/dashboard');
-      }, 1000);
+      } else {
+        toast.dismiss(loadingToast);
+        throw new Error(response.data.message || 'Signup failed');
+      }
     } catch (error) {
       setIsLoading(false);
+      
+      let errorMessage = 'An error occurred. Please try again.';
+      if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      // Show error toast
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      
       setErrors({ 
-        general: 'An error occurred. Please try again.' 
+        general: errorMessage 
       });
     }
   };

@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
 import Employer from '../models/Employer.js';
 
-// Protect routes - verify JWT token
-const protect = async (req, res, next) => {
+// Protect employer routes - verify JWT token and ensure user is an employer
+export const protectEmployer = async (req, res, next) => {
   try {
     let token;
 
@@ -23,15 +22,27 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Get user from token
-      req.user = await User.findById(decoded.id).select('-password');
+      // Get employer from token
+      const employer = await Employer.findById(decoded.id).select('-password');
 
-      if (!req.user) {
+      if (!employer) {
         return res.status(401).json({
           success: false,
-          message: 'User not found',
+          message: 'Employer not found',
         });
       }
+
+      // Check if employer is active
+      if (!employer.isActive) {
+        return res.status(403).json({
+          success: false,
+          message: 'Your account has been deactivated. Please contact support.',
+        });
+      }
+
+      // Attach employer to request
+      req.user = employer;
+      req.employer = employer;
 
       next();
     } catch (error) {
@@ -41,7 +52,7 @@ const protect = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error('Auth middleware error:', error);
+    console.error('Employer auth middleware error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -49,6 +60,4 @@ const protect = async (req, res, next) => {
     });
   }
 };
-
-export { protect };
 

@@ -66,10 +66,27 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="flex items-center gap-2 text-gray-900 font-semibold group-hover:gap-4 transition-all">
-                <span>Access Admin Dashboard</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {/* CTA Buttons */}
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick('/admin/login');
+                  }}
+                  className="w-full bg-gray-900 text-white font-semibold py-3 px-4 rounded-xl hover:bg-gray-800 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                >
+                  <Shield className="w-5 h-5" />
+                  Login
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick('/admin/signup');
+                  }}
+                  className="w-full border-2 border-gray-900 text-gray-900 font-semibold py-3 px-4 rounded-xl hover:bg-gray-50 transition flex items-center justify-center gap-2"
+                >
+                  Sign Up
+                </button>
               </div>
             </div>
           </div>
@@ -114,10 +131,27 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* CTA */}
-              <div className="flex items-center gap-2 text-blue-600 font-semibold group-hover:gap-4 transition-all">
-                <span>Access Employer Dashboard</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              {/* CTA Buttons */}
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick('/employer/login');
+                  }}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                >
+                  <Briefcase className="w-5 h-5" />
+                  Login
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCardClick('/employer/signup');
+                  }}
+                  className="w-full border-2 border-blue-600 text-blue-600 font-semibold py-3 px-4 rounded-xl hover:bg-blue-50 transition flex items-center justify-center gap-2"
+                >
+                  Sign Up
+                </button>
               </div>
             </div>
           </div>

@@ -1,9 +1,17 @@
 "use client";
 
+import { usePathname } from 'next/navigation';
 import EmployerSidebar from "../../components/EmployerSidebar";
 import Breadcrumb from "../../components/Breadcrumb";
 
 export default function EmployerLayout({ children }) {
+  const pathname = usePathname();
+  const isAuthPage = pathname?.includes('/login') || pathname?.includes('/signup');
+
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Sidebar */}
@@ -19,6 +27,4 @@ export default function EmployerLayout({ children }) {
     </div>
   );
 }
-
-
 

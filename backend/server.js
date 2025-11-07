@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import employerAuthRoutes from './employer/routes/authRoutes.js';
 import employerJobRoutes from './employer/routes/jobRoutes.js';
+import adminAuthRoutes from './admin/routes/authRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 
 // Load environment variables
@@ -35,6 +36,9 @@ app.use('/api/employer/auth', employerAuthRoutes);
 
 // Employer Job Routes
 app.use('/api/employer/jobs', employerJobRoutes);
+
+// Admin Auth Routes
+app.use('/api/admin/auth', adminAuthRoutes);
 
 // Public Job Routes (for job portal)
 app.use('/api/jobs', jobRoutes);

@@ -72,16 +72,57 @@ export default function AdminSignupPage() {
     setIsLoading(true);
     
     try {
-      // TODO: Implement actual API call for admin signup
-      // For now, simulate signup
-      setTimeout(() => {
+      // Import API utilities dynamically
+      const { default: api } = await import('../../../utils/api');
+      const { setAuth } = await import('../../../utils/auth');
+      const { toast } = await import('react-toastify');
+
+      // Make API call to signup endpoint
+      const response = await api.post('/admin/auth/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (response.data.success && response.data.data) {
+        // Extract JWT token and user data from response
+        const { token, user } = response.data.data;
+        
+        // Validate token exists
+        if (!token) {
+          setIsLoading(false);
+          setErrors({ general: 'No token received from server' });
+          return;
+        }
+        
+        // Save JWT token and user data
+        setAuth(token, user);
+        
+        // Show success message
+        toast.success('Account created successfully! Redirecting...', {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        
+        // Redirect to admin dashboard
+        setTimeout(() => {
+          router.push('/admin/dashboard');
+        }, 1000);
+      } else {
         setIsLoading(false);
-        router.push('/admin/dashboard');
-      }, 1000);
+        setErrors({ 
+          general: response.data.message || 'Registration failed. Please try again.' 
+        });
+      }
     } catch (error) {
       setIsLoading(false);
+      console.error('Signup error:', error);
+      
+      // Handle specific error messages from API
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred. Please try again.';
+      
       setErrors({ 
-        general: 'An error occurred. Please try again.' 
+        general: errorMessage
       });
     }
   };

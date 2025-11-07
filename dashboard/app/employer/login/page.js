@@ -9,11 +9,6 @@ import { setAuth } from '../../../utils/auth';
 export default function EmployerLoginPage() {
   const handleLogin = async (email, password) => {
     try {
-      // Show loading toast
-      const loadingToast = toast.loading('Logging in...', {
-        position: "top-right",
-      });
-
       // Make API call to login endpoint
       const response = await api.post('/employer/auth/login', { email, password });
       
@@ -23,7 +18,6 @@ export default function EmployerLoginPage() {
         
         // Validate token exists
         if (!token) {
-          toast.dismiss(loadingToast);
           toast.error('Login failed: No token received', {
             position: "top-right",
             autoClose: 3000,
@@ -34,8 +28,7 @@ export default function EmployerLoginPage() {
         // Save JWT token and user data using auth utility
         setAuth(token, user);
         
-        // Dismiss loading toast and show success
-        toast.dismiss(loadingToast);
+        // Show success message
         toast.success('Login successful! Redirecting...', {
           position: "top-right",
           autoClose: 2000,
@@ -43,7 +36,6 @@ export default function EmployerLoginPage() {
         
         return { success: true };
       } else {
-        toast.dismiss(loadingToast);
         return { success: false, message: response.data.message || 'Login failed' };
       }
     } catch (error) {

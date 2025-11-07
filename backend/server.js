@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import employerAuthRoutes from './employer/routes/authRoutes.js';
 import employerJobRoutes from './employer/routes/jobRoutes.js';
 import adminAuthRoutes from './admin/routes/authRoutes.js';
+import adminUserRoutes from './admin/routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 
 // Load environment variables
@@ -39,6 +40,9 @@ app.use('/api/employer/jobs', employerJobRoutes);
 
 // Admin Auth Routes
 app.use('/api/admin/auth', adminAuthRoutes);
+
+// Admin User Management Routes
+app.use('/api/admin', adminUserRoutes);
 
 // Public Job Routes (for job portal)
 app.use('/api/jobs', jobRoutes);

@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import employerAuthRoutes from './employer/routes/authRoutes.js';
 import employerJobRoutes from './employer/routes/jobRoutes.js';
+import employerApplicationRoutes from './employer/routes/applicationRoutes.js';
 import adminAuthRoutes from './admin/routes/authRoutes.js';
 import adminUserRoutes from './admin/routes/userRoutes.js';
 import adminJobRoutes from './admin/routes/jobRoutes.js';
@@ -38,6 +39,7 @@ app.use('/api/employer/auth', employerAuthRoutes);
 
 // Employer Job Routes
 app.use('/api/employer/jobs', employerJobRoutes);
+app.use('/api/employer/applications', employerApplicationRoutes);
 
 // Admin Auth Routes
 app.use('/api/admin/auth', adminAuthRoutes);

@@ -1,4 +1,5 @@
 import Job from '../models/Job.js';
+import Application from '../models/Application.js';
 
 // @desc    Get all public jobs (for job portal)
 // @route   GET /api/jobs
@@ -104,6 +105,92 @@ export const getPublicJobs = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while fetching jobs',
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Apply to a public job
+// @route   POST /api/jobs/:id/apply
+// @access  Private (Job seeker)
+export const applyToJob = async (req, res) => {
+  try {
+    const { id: jobId } = req.params;
+    const { applicantName, applicantEmail, applicantPhone, coverLetter, resumeUrl } = req.body;
+
+    if (!jobId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Job ID is required',
+      });
+    }
+
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: 'Job not found',
+      });
+    }
+
+    if (job.status !== 'active') {
+      return res.status(400).json({
+        success: false,
+        message: 'Applications are closed for this job',
+      });
+    }
+
+    const name = applicantName || req.user?.name;
+    const email = applicantEmail || req.user?.email;
+
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Applicant name and email are required',
+      });
+    }
+
+    const existingApplication = await Application.findOne({
+      job: job._id,
+      $or: [
+        req.user?._id ? { user: req.user._id } : null,
+        { applicantEmail: email },
+      ].filter(Boolean),
+    });
+
+    if (existingApplication) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have already applied to this job',
+      });
+    }
+
+    const application = await Application.create({
+      job: job._id,
+      employer: job.employer,
+      user: req.user?._id || null,
+      applicantName: name,
+      applicantEmail: email,
+      applicantPhone: applicantPhone || req.user?.phone || '',
+      coverLetter: coverLetter || '',
+      resumeUrl: resumeUrl || '',
+    });
+
+    await Job.findByIdAndUpdate(job._id, { $inc: { applications: 1 } });
+
+    res.status(201).json({
+      success: true,
+      message: 'Application submitted successfully',
+      data: {
+        application,
+      },
+    });
+  } catch (error) {
+    console.error('Apply to job error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while submitting application',
       error: error.message,
     });
   }

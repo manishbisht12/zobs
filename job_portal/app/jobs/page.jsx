@@ -74,7 +74,9 @@ import { Filter, X } from "lucide-react";
 
 export default function Jobs() {
   const { jobs, loading, error } = useJobs();
-  const [selectedJobId, setSelectedJobId] = useState(jobs && jobs[0] ? jobs[0].id : null);
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -157,16 +159,59 @@ export default function Jobs() {
     });
   }, [jobs, searchQuery, locationFilter, jobTypeFilter, salaryRangeFilter, experienceFilter]);
 
-  // Update selected job when filters change
   useEffect(() => {
-    if (filteredJobs.length > 0 && !filteredJobs.find(j => j.id === selectedJobId)) {
-      setSelectedJobId(filteredJobs[0].id);
-    } else if (filteredJobs.length === 0) {
-      setSelectedJobId(null);
+    setCurrentPage(1);
+  }, [searchQuery, locationFilter, jobTypeFilter, salaryRangeFilter, experienceFilter, jobs?.length]);
+
+  const totalPages = useMemo(
+    () => (filteredJobs.length === 0 ? 0 : Math.ceil(filteredJobs.length / ITEMS_PER_PAGE)),
+    [filteredJobs.length]
+  );
+
+  useEffect(() => {
+    if (totalPages === 0) {
+      if (currentPage !== 1) {
+        setCurrentPage(1);
+      }
+      return;
     }
-  }, [filteredJobs, selectedJobId]);
+
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const paginatedJobs = useMemo(() => {
+    if (filteredJobs.length === 0) return [];
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredJobs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredJobs, currentPage]);
+
+  // Update selected job when page or filters change
+  useEffect(() => {
+    if (paginatedJobs.length === 0) {
+      setSelectedJobId(null);
+      return;
+    }
+
+    const jobStillVisible = paginatedJobs.some((job) => job.id === selectedJobId);
+    if (!jobStillVisible) {
+      setSelectedJobId(paginatedJobs[0].id);
+    }
+  }, [paginatedJobs, selectedJobId]);
 
   const selectedJob = filteredJobs.find(j => j.id === selectedJobId) || null;
+
+  const showingStart = paginatedJobs.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const showingEnd = paginatedJobs.length === 0 ? 0 : showingStart + paginatedJobs.length - 1;
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page === currentPage || (totalPages !== 0 && page > totalPages)) return;
+    setCurrentPage(page);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const clearAllFilters = () => {
     setSearchQuery("");
@@ -188,7 +233,14 @@ export default function Jobs() {
     <>
       <Navbar />
       <div className="w-full pt-10 flex items-center justify-center">
-        <Home />
+      <Home
+        initialSearch={searchQuery}
+        initialLocation={locationFilter}
+        onSearch={({ search, location }) => {
+          setSearchQuery(search);
+          setLocationFilter(location);
+        }}
+      />
       </div>
       <Banner />
       
@@ -284,8 +336,8 @@ export default function Jobs() {
                 <p className="mb-4 text-lg font-semibold text-red-600">Error loading jobs</p>
                 <p>{error}</p>
               </div>
-            ) : filteredJobs && filteredJobs.length > 0 ? (
-              filteredJobs.map((job) => (
+            ) : paginatedJobs && paginatedJobs.length > 0 ? (
+              paginatedJobs.map((job) => (
                 <JobCard
                   key={job.id}
                   job={job}
@@ -318,6 +370,54 @@ export default function Jobs() {
           </div>
         </div>
       </main>
+
+      {filteredJobs.length > 0 && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm px-6 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <p className="text-sm text-gray-600">
+              Showing <span className="font-semibold text-gray-900">{showingStart}</span> to{" "}
+              <span className="font-semibold text-gray-900">{showingEnd}</span> of{" "}
+              <span className="font-semibold text-gray-900">{filteredJobs.length}</span> jobs
+            </p>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+
+              {Array.from({ length: totalPages || 1 }, (_, index) => {
+                const pageNumber = index + 1;
+                return (
+                  <button
+                    key={pageNumber}
+                    onClick={() => handlePageChange(pageNumber)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                      currentPage === pageNumber
+                        ? "bg-blue-600 text-white shadow-sm"
+                        : "border border-gray-300 text-gray-700 hover:bg-gray-50"
+                    }`}
+                    disabled={pageNumber === currentPage}
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={totalPages === 0 || currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </>

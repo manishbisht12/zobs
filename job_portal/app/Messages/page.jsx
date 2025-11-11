@@ -16,15 +16,6 @@ const resolveAttachmentUrl = (url) => {
   return url.startsWith('http') ? url : `${SOCKET_URL}${url}`;
 };
 
-const normalizeThread = (thread) => ({
-  employerId: thread.employerId?.toString?.() || thread.employerId,
-  employerName: thread.employerName || 'Employer',
-  employerEmail: thread.employerEmail || '',
-  lastMessage: thread.lastMessage || '',
-  lastMessageAt: thread.lastMessageAt || new Date().toISOString(),
-  unreadCount: thread.unreadCount || 0,
-});
-
 const formatRelativeTime = (value) => {
   if (!value) return "Just now";
   const date = new Date(value);

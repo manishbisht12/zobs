@@ -11,7 +11,8 @@ import {
   Settings, 
   LogOut,
   Menu,
-  X
+  X,
+  MessageCircle
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
@@ -22,6 +23,7 @@ const menuItems = [
   { name: 'Jobs', icon: Briefcase, path: '/employer/jobs' },
   { name: 'Applications', icon: FileText, path: '/employer/applications' },
   { name: 'Analytics', icon: BarChart3, path: '/employer/analytics' },
+  { name: 'Messages', icon: MessageCircle, path: '/employer/messages' },
   { name: 'Settings', icon: Settings, path: '/employer/settings' },
 ];
 

@@ -5,6 +5,12 @@ const formatStatus = (status) => {
   return status.toLowerCase();
 };
 
+const buildStatusCount = (status) => ({
+  $sum: {
+    $cond: [{ $eq: ['$status', status] }, 1, 0],
+  },
+});
+
 export const getApplications = async (req, res) => {
   try {
     const employerId = req.employer?._id;
@@ -177,6 +183,134 @@ export const getApplicationStats = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while fetching application stats',
+      error: error.message,
+    });
+  }
+};
+
+
+export const getApplicantsDirectory = async (req, res) => {
+  try {
+    const employerId = req.employer?._id;
+    const { search } = req.query;
+
+    const matchStage = { employer: employerId };
+
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      matchStage.$or = [
+        { applicantName: regex },
+        { applicantEmail: regex },
+      ];
+    }
+
+    const pipeline = [
+      { $match: matchStage },
+      { $sort: { createdAt: -1 } },
+      {
+        $group: {
+          _id: '$applicantEmail',
+          applicantUserId: { $first: '$user' },
+          applicantName: { $first: '$applicantName' },
+          applicantEmail: { $first: '$applicantEmail' },
+          applicantPhone: { $first: '$applicantPhone' },
+          resumeUrl: { $first: '$resumeUrl' },
+          coverLetter: { $first: '$coverLetter' },
+          jobIds: { $addToSet: '$job' },
+          lastAppliedAt: { $first: '$createdAt' },
+          lastStatus: { $first: '$status' },
+          totalApplications: { $sum: 1 },
+          pendingCount: buildStatusCount('pending'),
+          reviewedCount: buildStatusCount('reviewed'),
+          interviewCount: buildStatusCount('interview'),
+          acceptedCount: buildStatusCount('accepted'),
+          rejectedCount: buildStatusCount('rejected'),
+        },
+      },
+      {
+        $lookup: {
+          from: 'jobs',
+          localField: 'jobIds',
+          foreignField: '_id',
+          as: 'jobs',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          applicantId: {
+            $cond: [
+              { $ifNull: ['$applicantUserId', false] },
+              { $toString: '$applicantUserId' },
+              '$_id',
+            ],
+          },
+          applicantUserId: {
+            $cond: [
+              { $ifNull: ['$applicantUserId', false] },
+              { $toString: '$applicantUserId' },
+              null,
+            ],
+          },
+          applicantName: { $ifNull: ['$applicantName', ''] },
+          applicantEmail: { $ifNull: ['$applicantEmail', ''] },
+          applicantPhone: { $ifNull: ['$applicantPhone', ''] },
+          resumeUrl: { $ifNull: ['$resumeUrl', ''] },
+          coverLetter: { $ifNull: ['$coverLetter', ''] },
+          lastAppliedAt: 1,
+          lastStatus: { $ifNull: ['$lastStatus', 'pending'] },
+          totalApplications: 1,
+          stats: {
+            total: '$totalApplications',
+            pending: '$pendingCount',
+            reviewed: '$reviewedCount',
+            interview: '$interviewCount',
+            accepted: '$acceptedCount',
+            rejected: '$rejectedCount',
+            latestJobTitle: {
+              $ifNull: [
+                {
+                  $first: {
+                    $map: {
+                      input: '$jobs',
+                      as: 'job',
+                      in: '$$job.jobTitle',
+                    },
+                  },
+                },
+                '',
+              ],
+            },
+          },
+          jobs: {
+            $map: {
+              input: '$jobs',
+              as: 'job',
+              in: {
+                _id: '$$job._id',
+                jobTitle: '$$job.jobTitle',
+                status: '$$job.status',
+              },
+            },
+          },
+        },
+      },
+      { $sort: { lastAppliedAt: -1 } },
+    ];
+
+    const applicants = await Application.aggregate(pipeline);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        applicants,
+      },
+    });
+  } catch (error) {
+    console.error('Get applicants directory error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching applicants',
       error: error.message,
     });
   }

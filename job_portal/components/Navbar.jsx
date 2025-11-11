@@ -108,7 +108,7 @@ export default function Navbar() {
                     </div>
                     <BookmarksDropdown isOpen={showBookmarks} onClose={() => setShowBookmarks(false)} />
                   </div>
-                  <IconWithTooltip Icon={MessageSquare} label="Messages" />
+                  <IconWithTooltip Icon={MessageSquare} label="Messages" onClick={() => router.push('/Messages')} />
                   <IconWithTooltip Icon={User} label="Profile" onClick={handleProfile} />
 
                 </div>

@@ -63,6 +63,8 @@ export default function EmployerLoginPage() {
       theme="gray"
       redirectPath="/employer/dashboard"
       signupPath="/employer/signup"
+      emailPlaceholder="employer@example.com"
+      passwordPlaceholder="Enter your password"
     />
   );
 }

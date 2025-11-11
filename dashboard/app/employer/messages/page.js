@@ -19,6 +19,10 @@ import {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 const SOCKET_URL = API_BASE.replace(/\/api$/, "");
+const resolveAttachmentUrl = (url) => {
+  if (!url) return null;
+  return url.startsWith('http') ? url : `${SOCKET_URL}${url}`;
+};
 
 const avatarPalette = [
   "bg-amber-500",
@@ -138,15 +142,21 @@ const MessageBubble = ({ message }) => {
       <p className="whitespace-pre-line text-sm leading-6">{message.body}</p>
       {message.attachments.length > 0 && (
         <div className="flex flex-wrap gap-3 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
-          {message.attachments.map((file, idx) => (
-            <button
-              key={`${message.id}-att-${idx}`}
-              className="flex items-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-gray-300 hover:bg-white transition"
-            >
-              <FileText className="h-4 w-4" />
-              <span>{file.name || file.label || `Attachment ${idx + 1}`}</span>
-            </button>
-          ))}
+          {message.attachments.map((file, idx) => {
+            const href = resolveAttachmentUrl(file.url);
+            return (
+              <a
+                key={`${message.id}-att-${idx}`}
+                href={href || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-gray-300 hover:bg-white transition"
+              >
+                <FileText className="h-4 w-4" />
+                <span className="max-w-[200px] truncate">{file.name || file.label || `Attachment ${idx + 1}`}</span>
+              </a>
+            );
+          })}
         </div>
       )}
     </div>
@@ -164,6 +174,8 @@ export default function EmployerMessagesPage() {
   const [activeApplicantId, setActiveApplicantId] = useState(null);
   const [messageDraft, setMessageDraft] = useState("");
   const [sendLoading, setSendLoading] = useState(false);
+  const [attachment, setAttachment] = useState(null);
+  const [attachmentError, setAttachmentError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -173,6 +185,7 @@ export default function EmployerMessagesPage() {
 
   const socketRef = useRef(null);
   const activeApplicantRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     activeApplicantRef.current = activeApplicantId;
@@ -384,23 +397,53 @@ export default function EmployerMessagesPage() {
   const activeMessages = activeApplicantId ? messagesByApplicant[activeApplicantId] || [] : [];
 
   const handleSendMessage = async () => {
-    if (!activeApplicantId || !messageDraft.trim()) return;
+    if (!activeApplicantId || (!messageDraft.trim() && !attachment)) return;
 
     setSendLoading(true);
+    setAttachmentError("");
     const trimmed = messageDraft.trim();
 
     try {
-      const { data } = await api.post('/employer/messages', {
-        applicantId: activeApplicantId,
-        message: trimmed,
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const formData = new FormData();
+      formData.append('applicantId', activeApplicantId);
+      if (trimmed) {
+        formData.append('message', trimmed);
+      }
+      if (attachment) {
+        formData.append('attachment', attachment);
+      }
+
+      const response = await fetch(`${API_BASE}/employer/messages`, {
+        method: 'POST',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
       });
 
-      const saved = normalizeMessage(data?.data?.message);
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload?.message || 'Failed to send message');
+      }
+
+      const saved = normalizeMessage(payload?.data?.message);
       const fallback = normalizeMessage({
         id: `local-${Date.now()}`,
-        body: trimmed,
+        body: trimmed || (attachment ? `Attachment: ${attachment.name}` : ''),
         senderType: 'employer',
         createdAt: new Date().toISOString(),
+        attachments: attachment
+          ? [
+              {
+                name: attachment.name,
+                url: '',
+                type: attachment.type,
+                size: attachment.size,
+              },
+            ]
+          : [],
       });
       const appended = saved || fallback;
 
@@ -429,14 +472,36 @@ export default function EmployerMessagesPage() {
       );
 
       setMessageDraft("");
+      setAttachment(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Failed to send message', error);
+      setAttachmentError(error.message || 'Failed to send message');
     } finally {
       setSendLoading(false);
     }
   };
 
-  const isSendDisabled = !messageDraft.trim() || !activeApplicantId || sendLoading;
+  const isSendDisabled = (!messageDraft.trim() && !attachment) || !activeApplicantId || sendLoading;
+
+  const handleAttachmentChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setAttachment(null);
+      return;
+    }
+    setAttachment(file);
+    setAttachmentError("");
+  };
+
+  const clearAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleCandidateSelection = (candidate) => {
     if (!candidate) return;
@@ -490,7 +555,7 @@ export default function EmployerMessagesPage() {
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search conversations..."
-                  className="w-full rounded-lg border border-gray-200 bg-white px-10 py-2.5 text-sm focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                 />
               </div>
             </div>
@@ -578,21 +643,48 @@ export default function EmployerMessagesPage() {
 
               <footer className="border-t border-gray-200 px-6 py-4">
                 <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 focus-within:border-gray-900 focus-within:bg-white focus-within:shadow-md">
-                  <textarea
-                    rows={1}
-                    value={messageDraft}
-                    onChange={(event) => setMessageDraft(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" && !event.shiftKey) {
-                        event.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                    placeholder="Type your message..."
-                    className="flex-1 resize-none border-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
-                  />
+                  <div className="flex-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      onChange={handleAttachmentChange}
+                    />
+                    <textarea
+                      rows={1}
+                      value={messageDraft}
+                      onChange={(event) => setMessageDraft(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" && !event.shiftKey) {
+                          event.preventDefault();
+                          handleSendMessage();
+                        }
+                      }}
+                      placeholder="Type your message..."
+                      className="w-full resize-none border-none bg-transparent text-sm text-gray-900 placeholder:text-gray-600 focus:outline-none"
+                    />
+                    {attachment && (
+                      <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-xs text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          <span className="max-w-[220px] truncate">{attachment.name}</span>
+                        </div>
+                        <button type="button" onClick={clearAttachment} className="text-gray-500 hover:text-gray-700">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+                    {attachmentError && (
+                      <p className="mt-2 text-xs text-red-600">{attachmentError}</p>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
-                    <button className="rounded-full border border-gray-200 p-2 text-gray-500 hover:bg-gray-100 transition" title="Attach file (coming soon)">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="rounded-full border border-gray-200 p-2 text-gray-500 hover:bg-gray-100 transition"
+                      title="Attach a file"
+                    >
                       <Paperclip className="h-4 w-4" />
                     </button>
                     <button
@@ -641,7 +733,7 @@ export default function EmployerMessagesPage() {
                   value={candidateSearch}
                   onChange={(event) => setCandidateSearch(event.target.value)}
                   placeholder="Search applicants..."
-                  className="w-full rounded-lg border border-gray-200 bg-white px-10 py-2.5 text-sm focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                  className="w-full rounded-lg border border-gray-200 bg-white px-10 py-2.5 text-sm text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                 />
               </div>
             </div>

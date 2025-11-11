@@ -13,7 +13,7 @@ const generateToken = (id) => {
 // @access  Public
 export const employerSignup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, companyName } = req.body;
 
     // Validation
     if (!name || !email || !password) {
@@ -40,6 +40,14 @@ export const employerSignup = async (req, res) => {
       });
     }
 
+    // Validate company name
+    if (!companyName?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide your company name',
+      });
+    }
+
     // Check if employer already exists
     const employerExists = await Employer.findOne({ email });
     if (employerExists) {
@@ -54,6 +62,7 @@ export const employerSignup = async (req, res) => {
       name,
       email,
       password,
+      companyName: companyName.trim(),
     });
 
     // Generate token
@@ -68,6 +77,7 @@ export const employerSignup = async (req, res) => {
           name: employer.name,
           email: employer.email,
           role: 'employer',
+          companyName: employer.companyName,
         },
         token,
       },

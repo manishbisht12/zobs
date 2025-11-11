@@ -150,7 +150,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="text"
                 defaultValue="Employer"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -160,7 +160,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="email"
                 defaultValue="employer@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -170,7 +170,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="password"
                 placeholder="Enter current password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -180,7 +180,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="password"
                 placeholder="Enter new password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
             <div>
@@ -190,7 +190,7 @@ export default function EmployerSettingsPage() {
               <input
                 type="password"
                 placeholder="Confirm new password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
               />
             </div>
           </div>

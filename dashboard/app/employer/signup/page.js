@@ -92,6 +92,7 @@ export default function EmployerSignupPage() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        companyName: formData.company,
       });
       
       if (response.data.success && response.data.data) {
@@ -184,7 +185,7 @@ export default function EmployerSignupPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Enter your full name"
@@ -212,7 +213,7 @@ export default function EmployerSignupPage() {
                   name="company"
                   value={formData.company}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.company ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Enter your company name"
@@ -240,7 +241,7 @@ export default function EmployerSignupPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="employer@example.com"
@@ -268,7 +269,7 @@ export default function EmployerSignupPage() {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Create a password"
@@ -307,7 +308,7 @@ export default function EmployerSignupPage() {
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl text-gray-900 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 transition ${
                     errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
                   }`}
                   placeholder="Confirm your password"

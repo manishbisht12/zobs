@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { io } from "socket.io-client";
-import { MessageCircle, Search, Send, Paperclip, Loader2 } from "lucide-react";
+import { MessageCircle, Search, Send, Paperclip, Loader2, FileText, X } from "lucide-react";
 import api from "../../utils/api";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -11,6 +11,10 @@ import { useAuth } from "../contexts/AuthContext";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 const SOCKET_URL = API_BASE.replace(/\/api$/, "");
+const resolveAttachmentUrl = (url) => {
+  if (!url) return null;
+  return url.startsWith('http') ? url : `${SOCKET_URL}${url}`;
+};
 
 const formatRelativeTime = (value) => {
   if (!value) return "Just now";
@@ -72,6 +76,25 @@ const MessageBubble = ({ message }) => {
         <span className={isApplicant ? "text-indigo-100" : "text-gray-500"}>{timestamp}</span>
       </div>
       <p className="whitespace-pre-line text-sm leading-6">{message.body}</p>
+      {message.attachments.length > 0 && (
+        <div className="flex flex-wrap gap-3 rounded-2xl border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm text-indigo-900/90">
+          {message.attachments.map((file, idx) => {
+            const href = resolveAttachmentUrl(file.url);
+            return (
+              <a
+                key={`${message._id}-att-${idx}`}
+                href={href || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-indigo-200 hover:bg-white transition"
+              >
+                <Paperclip className="h-4 w-4" />
+                <span className="max-w-[200px] truncate">{file.name || file.label || `Attachment ${idx + 1}`}</span>
+              </a>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
@@ -104,12 +127,15 @@ const MessagesContent = ({ user, apiClient = api }) => {
 
   const [messageDraft, setMessageDraft] = useState("");
   const [sendLoading, setSendLoading] = useState(false);
+  const [attachment, setAttachment] = useState(null);
+  const [attachmentError, setAttachmentError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   const socketRef = useRef(null);
   const selectedEmployerRef = useRef(null);
   const threadsRef = useRef(threads);
   const messagesRef = useRef(messagesByEmployer);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     threadsRef.current = threads;
@@ -321,21 +347,52 @@ const MessagesContent = ({ user, apiClient = api }) => {
   }, [selectedEmployerId]);
 
   const handleSendMessage = async () => {
-    if (!selectedEmployerId || !messageDraft.trim()) return;
+    if (!selectedEmployerId || (!messageDraft.trim() && !attachment)) return;
 
     setSendLoading(true);
+    setAttachmentError("");
     const trimmed = messageDraft.trim();
 
     try {
-      const { data } = await apiClient.post(`/messages/${selectedEmployerId}`, {
-        message: trimmed,
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const formData = new FormData();
+      if (trimmed) {
+        formData.append('message', trimmed);
+      }
+      if (attachment) {
+        formData.append('attachment', attachment);
+      }
+
+      const response = await fetch(`${API_BASE}/messages/${selectedEmployerId}`, {
+        method: 'POST',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
       });
-      const saved = normalizeMessage(data?.data?.message);
+
+      const payload = await response.json();
+
+      if (!response.ok) {
+        throw new Error(payload?.message || 'Failed to send message');
+      }
+
+      const saved = normalizeMessage(payload?.data?.message);
       const fallback = normalizeMessage({
         employer: selectedEmployerId,
-        body: trimmed,
+        body: trimmed || (attachment ? `Attachment: ${attachment.name}` : ''),
         senderType: 'applicant',
         createdAt: new Date().toISOString(),
+        attachments: attachment
+          ? [
+              {
+                name: attachment.name,
+                url: '',
+                type: attachment.type,
+                size: attachment.size,
+              },
+            ]
+          : [],
       });
       const appendedMessage = saved || fallback;
 
@@ -360,8 +417,13 @@ const MessagesContent = ({ user, apiClient = api }) => {
       });
 
       setMessageDraft("");
+      setAttachment(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Failed to send message', error);
+      setAttachmentError(error.message || 'Failed to send message');
     } finally {
       setSendLoading(false);
     }
@@ -381,7 +443,24 @@ const MessagesContent = ({ user, apiClient = api }) => {
     ? messagesByEmployer[selectedEmployerId] || []
     : [];
 
-  const isSendDisabled = !messageDraft.trim() || !selectedEmployerId || sendLoading;
+  const isSendDisabled = (!messageDraft.trim() && !attachment) || !selectedEmployerId || sendLoading;
+
+  const handleAttachmentChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setAttachment(null);
+      return;
+    }
+    setAttachment(file);
+    setAttachmentError("");
+  };
+
+  const clearAttachment = () => {
+    setAttachment(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -478,44 +557,65 @@ const MessagesContent = ({ user, apiClient = api }) => {
                     )}
                   </div>
 
-                  <div className="border-t border-gray-200 px-6 py-4">
-                    <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 focus-within:border-indigo-600 focus-within:bg-white focus-within:shadow-md">
-                      <textarea
-                        rows={1}
-                        value={messageDraft}
-                        onChange={(event) => setMessageDraft(event.target.value)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' && !event.shiftKey) {
-                            event.preventDefault();
-                            handleSendMessage();
-                          }
-                        }}
-                        placeholder="Type your message..."
-                        className="flex-1 resize-none border-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
-                      />
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          className="rounded-full border border-gray-200 p-2 text-gray-500 hover:bg-gray-100 transition"
-                          title="Attach file (coming soon)"
-                        >
-                          <Paperclip className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={handleSendMessage}
-                          disabled={isSendDisabled}
-                          className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-sm transition ${
-                            isSendDisabled
-                              ? 'cursor-not-allowed bg-gray-200 text-gray-500'
-                              : 'bg-indigo-600 text-white hover:bg-indigo-500'
-                          }`}
-                        >
-                          <Send className="h-4 w-4" />
-                          {sendLoading ? 'Sending...' : 'Send'}
+                  <footer className="border-t border-gray-200 px-6 py-4">
+                <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 focus-within:border-indigo-600 focus-within:bg-white focus-within:shadow-md">
+                  <div className="flex-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      onChange={handleAttachmentChange}
+                    />
+                    <textarea
+                      rows={1}
+                      value={messageDraft}
+                      onChange={(event) => setMessageDraft(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" && !event.shiftKey) {
+                          event.preventDefault();
+                          handleSendMessage();
+                        }
+                      }}
+                      placeholder="Type your message..."
+                      className="w-full resize-none border-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+                    />
+                    {attachment && (
+                      <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs text-indigo-700">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          <span className="max-w-[220px] truncate">{attachment.name}</span>
+                        </div>
+                        <button type="button" onClick={clearAttachment} className="text-indigo-500 hover:text-indigo-700">
+                          <X className="h-3 w-3" />
                         </button>
                       </div>
-                    </div>
+                    )}
+                    {attachmentError && (
+                      <p className="mt-2 text-xs text-red-500">{attachmentError}</p>
+                    )}
                   </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="rounded-full border border-gray-200 p-2 text-gray-500 hover:bg-gray-100 transition"
+                      title="Attach a file"
+                    >
+                      <Paperclip className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={isSendDisabled}
+                      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium shadow-sm transition ${
+                        isSendDisabled ? "cursor-not-allowed bg-gray-200 text-gray-500" : "bg-indigo-600 text-white hover:bg-indigo-500"
+                      }`}
+                    >
+                      <Send className="h-4 w-4" />
+                      {sendLoading ? "Sending..." : "Send"}
+                    </button>
+                  </div>
+                </div>
+               </footer>
                 </div>
               )}
             </section>

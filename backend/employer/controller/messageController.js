@@ -159,11 +159,20 @@ export const sendMessageToApplicant = async (req, res) => {
   try {
     const employerId = req.employer?._id;
     const { applicantId, message, jobId } = req.body;
+    const text = (message || '').trim();
+    const file = req.file;
 
-    if (!applicantId || !message?.trim()) {
+    if (!applicantId) {
       return res.status(400).json({
         success: false,
-        message: 'Both applicantId and message are required',
+        message: 'applicantId is required',
+      });
+    }
+
+    if (!text && !file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Provide a message or an attachment',
       });
     }
 
@@ -175,13 +184,27 @@ export const sendMessageToApplicant = async (req, res) => {
       });
     }
 
+    const attachments = [];
+
+    if (file) {
+      attachments.push({
+        name: file.originalname,
+        url: `/uploads/messages/${file.filename}`,
+        type: file.mimetype,
+        size: file.size,
+      });
+    }
+
+    const preview = text || (attachments[0]?.name ? `Attachment: ${attachments[0].name}` : '');
+
     const messageDoc = await Message.create({
       employer: employerId,
       applicant: applicantId,
       job: jobId || application.job,
       senderType: 'employer',
       senderId: employerId,
-      body: message.trim(),
+      body: preview,
+      attachments,
       readByEmployer: true,
       readByApplicant: false,
     });
@@ -207,6 +230,21 @@ export const sendMessageToApplicant = async (req, res) => {
     });
   } catch (error) {
     console.error('Employer send message error:', error);
+
+    if (error.message === 'Unsupported file type') {
+      return res.status(400).json({
+        success: false,
+        message: 'Unsupported file type',
+      });
+    }
+
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        success: false,
+        message: 'Attachment exceeds the 10MB limit',
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: 'Server error while sending message',

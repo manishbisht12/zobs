@@ -11,7 +11,9 @@ export default function LoginForm({
   icon: Icon, 
   theme = 'blue',
   redirectPath,
-  signupPath
+  signupPath,
+  emailPlaceholder,
+  passwordPlaceholder,
 }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -103,6 +105,15 @@ export default function LoginForm({
     : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700';
   const linkColor = isDark ? 'text-gray-900 hover:text-gray-700' : isGray ? 'text-gray-900 hover:text-gray-700' : 'text-blue-600 hover:text-blue-700';
   const backLinkColor = isDark ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900';
+  const focusRingColor = theme === 'dark' ? 'focus:ring-gray-900' : theme === 'gray' ? 'focus:ring-gray-500' : 'focus:ring-blue-500';
+  const inputNormalClasses = isDark
+    ? 'border-gray-700 bg-gray-900/60 hover:border-gray-600 text-gray-100 placeholder:text-gray-400'
+    : 'border-gray-300 bg-gray-50 hover:border-gray-400 text-gray-900 placeholder:text-gray-600';
+  const inputErrorClasses = isDark
+    ? 'border-red-500 bg-red-900/40 text-red-100 placeholder:text-red-200'
+    : 'border-red-300 bg-red-50 text-gray-900 placeholder:text-gray-600';
+  const emailPlaceholderText = emailPlaceholder || (isDark ? 'admin@example.com' : 'you@example.com');
+  const passwordPlaceholderText = passwordPlaceholder || 'Enter your password';
 
   return (
     <div className={`min-h-screen ${bgGradient} flex items-center justify-center p-4`}>
@@ -139,12 +150,10 @@ export default function LoginForm({
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-gray-900' : theme === 'gray' ? 'focus:ring-gray-500' : 'focus:ring-blue-500'
-                  } transition ${
-                    errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                  className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 ${focusRingColor} transition ${
+                    errors.email ? inputErrorClasses : inputNormalClasses
                   }`}
-                  placeholder={isDark ? 'admin@example.com' : 'employer@example.com'}
+                  placeholder={emailPlaceholderText}
                 />
               </div>
               {errors.email && (
@@ -168,12 +177,10 @@ export default function LoginForm({
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 ${
-                    theme === 'dark' ? 'focus:ring-gray-900' : theme === 'gray' ? 'focus:ring-gray-500' : 'focus:ring-blue-500'
-                  } transition ${
-                    errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                  className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 ${focusRingColor} transition ${
+                    errors.password ? inputErrorClasses : inputNormalClasses
                   }`}
-                  placeholder="Enter your password"
+                  placeholder={passwordPlaceholderText}
                 />
                 <button
                   type="button"

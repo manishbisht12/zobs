@@ -328,7 +328,7 @@ export default function PostJobPage() {
                   value={formData.jobTitle}
                   onChange={handleChange}
                   placeholder="e.g. Senior Software Engineer"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
+                  className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
                     errors.jobTitle ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -345,7 +345,7 @@ export default function PostJobPage() {
                   value={formData.companyName}
                   onChange={handleChange}
                   placeholder="Your company name"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
+                  className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
                     errors.companyName ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -362,7 +362,7 @@ export default function PostJobPage() {
                   value={formData.location}
                   onChange={handleChange}
                   placeholder="e.g. New York, NY or Remote"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
+                  className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
                     errors.location ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -379,7 +379,7 @@ export default function PostJobPage() {
                   value={formData.category}
                   onChange={handleChange}
                   placeholder="e.g. Technology, Marketing, Sales"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
 
@@ -391,7 +391,7 @@ export default function PostJobPage() {
                   name="jobType"
                   value={formData.jobType}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition bg-white"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 >
                   <option value="full-time">Full-time</option>
                   <option value="part-time">Part-time</option>
@@ -409,7 +409,7 @@ export default function PostJobPage() {
                   name="workplaceType"
                   value={formData.workplaceType}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition bg-white"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 >
                   <option value="on-site">On-site</option>
                   <option value="remote">Remote</option>
@@ -425,7 +425,7 @@ export default function PostJobPage() {
                   name="experience"
                   value={formData.experience}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition bg-white"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 >
                   <option value="entry">Entry Level</option>
                   <option value="mid">Mid Level</option>
@@ -445,7 +445,7 @@ export default function PostJobPage() {
                   value={formData.numberOfOpenings}
                   onChange={handleChange}
                   min="1"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
             </div>
@@ -467,7 +467,7 @@ export default function PostJobPage() {
                   name="currency"
                   value={formData.currency}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition bg-white"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 >
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
@@ -486,7 +486,7 @@ export default function PostJobPage() {
                   value={formData.salaryMin}
                   onChange={handleChange}
                   placeholder="50000"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
 
@@ -500,7 +500,7 @@ export default function PostJobPage() {
                   value={formData.salaryMax}
                   onChange={handleChange}
                   placeholder="80000"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
             </div>
@@ -556,7 +556,7 @@ export default function PostJobPage() {
                   value={formData.skills}
                   onChange={handleChange}
                   placeholder="e.g. React, Node.js, Python (comma separated)"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
                 <p className="text-xs text-gray-500 mt-1">Separate multiple skills with commas</p>
               </div>
@@ -571,7 +571,7 @@ export default function PostJobPage() {
                   onChange={handleChange}
                   rows={6}
                   placeholder="Provide a detailed description of the role, company culture, and what makes this opportunity unique..."
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none ${
+                  className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none ${
                     errors.description ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -588,7 +588,7 @@ export default function PostJobPage() {
                   onChange={handleChange}
                   rows={4}
                   placeholder="List the main responsibilities and day-to-day tasks..."
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none"
                 />
               </div>
 
@@ -602,7 +602,7 @@ export default function PostJobPage() {
                   onChange={handleChange}
                   rows={4}
                   placeholder="List the qualifications, education, and experience requirements..."
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none"
                 />
               </div>
 
@@ -616,7 +616,7 @@ export default function PostJobPage() {
                   onChange={handleChange}
                   rows={3}
                   placeholder="e.g. Health insurance, 401k, Remote work, Flexible hours, Stock options..."
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition resize-none"
                 />
               </div>
             </div>
@@ -640,7 +640,7 @@ export default function PostJobPage() {
                   value={formData.contactEmail}
                   onChange={handleChange}
                   placeholder="hr@company.com"
-                  className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
+                  className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition ${
                     errors.contactEmail ? 'border-red-500' : 'border-gray-300'
                   }`}
                 />
@@ -657,7 +657,7 @@ export default function PostJobPage() {
                   value={formData.contactPhone}
                   onChange={handleChange}
                   placeholder="+1 (555) 123-4567"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
 
@@ -671,7 +671,7 @@ export default function PostJobPage() {
                   value={formData.companyWebsite}
                   onChange={handleChange}
                   placeholder="https://www.company.com"
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 placeholder:text-gray-600 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
 
@@ -684,7 +684,7 @@ export default function PostJobPage() {
                   name="applicationDeadline"
                   value={formData.applicationDeadline}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none transition"
                 />
               </div>
             </div>

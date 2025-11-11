@@ -95,8 +95,8 @@ const ThreadListItem = ({ thread, isActive, onSelect }) => {
           {initials}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <p className="truncate text-sm font-semibold text-gray-900">
+          <div className="flex items-start justify-between gap-2">
+            <p className="text-sm font-semibold leading-tight text-gray-900 break-words">
               {thread.applicantName || 'Applicant'}
             </p>
             <span className="whitespace-nowrap text-xs text-gray-400">
@@ -104,7 +104,7 @@ const ThreadListItem = ({ thread, isActive, onSelect }) => {
             </span>
           </div>
           {thread.applicantEmail ? (
-            <p className="truncate text-xs text-gray-500">{thread.applicantEmail}</p>
+            <p className="text-xs leading-tight text-gray-500 break-all">{thread.applicantEmail}</p>
           ) : null}
           <p className="mt-2 line-clamp-1 text-sm text-gray-600">
             {thread.lastMessage?.trim() ? thread.lastMessage : 'No messages yet'}
@@ -556,7 +556,9 @@ export default function EmployerMessagesPage() {
                 })()}
               </header>
 
-              <div className="flex-1 space-y-6 overflow-y-auto bg-gray-50 px-6 py-6">
+              <div
+              className="flex-1 min-h-[320px] space-y-6 overflow-y-auto bg-gray-50 px-6 py-6"
+              >
                 {messagesLoading ? (
                   <div className="flex h-full items-center justify-center text-sm text-gray-600">
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading conversation...

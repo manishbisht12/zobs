@@ -69,46 +69,56 @@ const formatRelativeTime = (value) => {
   return date.toLocaleDateString();
 };
 
-const ThreadListItem = ({ thread, isActive, onSelect }) => (
-  <button
-    onClick={onSelect}
-    className={`w-full rounded-xl border p-4 text-left transition ${
-      isActive ? "border-gray-900 bg-gray-900/5 shadow-sm" : "border-gray-200 hover:border-gray-300 hover:bg-white"
-    }`}
-  >
-    <div className="flex items-start justify-between gap-3">
+const ThreadListItem = ({ thread, isActive, onSelect }) => {
+  const initials = (thread.applicantName || 'A')
+    .split(' ')
+    .map((n) => n.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <button
+      onClick={onSelect}
+      className={`w-full rounded-xl border p-4 text-left transition ${
+        isActive
+          ? 'border-indigo-600 bg-indigo-50 shadow-sm'
+          : 'border-gray-200 hover:border-gray-300 hover:bg-white'
+      }`}
+    >
       <div className="flex items-start gap-3">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-full text-white font-semibold ${
-            thread.avatarColor || "bg-gray-400"
+          className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold text-white ${
+            thread.avatarColor || 'bg-indigo-500'
           }`}
         >
-          {(thread.applicantName || "A")
-            .split(" ")
-            .map((n) => n.charAt(0))
-            .join("")
-            .slice(0, 2)
-            .toUpperCase()}
+          {initials}
         </div>
-        <div>
-          <p className="text-sm font-semibold text-gray-900">{thread.applicantName}</p>
-          <p className="text-xs text-gray-500">{thread.applicantEmail}</p>
-          <p className="mt-2 line-clamp-2 text-sm text-gray-600">
-            {thread.lastMessage?.trim() ? thread.lastMessage : "No messages yet"}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <p className="truncate text-sm font-semibold text-gray-900">
+              {thread.applicantName || 'Applicant'}
+            </p>
+            <span className="whitespace-nowrap text-xs text-gray-400">
+              {formatRelativeTime(thread.lastMessageAt)}
+            </span>
+          </div>
+          {thread.applicantEmail ? (
+            <p className="truncate text-xs text-gray-500">{thread.applicantEmail}</p>
+          ) : null}
+          <p className="mt-2 line-clamp-1 text-sm text-gray-600">
+            {thread.lastMessage?.trim() ? thread.lastMessage : 'No messages yet'}
           </p>
         </div>
-      </div>
-      <div className="flex flex-col items-end gap-2">
-        <span className="text-xs text-gray-400">{formatRelativeTime(thread.lastMessageAt)}</span>
         {thread.unreadCount > 0 && (
-          <span className="rounded-full bg-gray-900 px-2 py-0.5 text-xs font-semibold text-white">
+          <span className="self-start rounded-full bg-indigo-600 px-2 py-0.5 text-xs font-semibold text-white">
             {thread.unreadCount}
           </span>
         )}
       </div>
-    </div>
-  </button>
-);
+    </button>
+  );
+};
 
 const MessageBubble = ({ message }) => {
   const isEmployer = message.senderType === "employer";

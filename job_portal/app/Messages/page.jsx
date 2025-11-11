@@ -16,6 +16,15 @@ const resolveAttachmentUrl = (url) => {
   return url.startsWith('http') ? url : `${SOCKET_URL}${url}`;
 };
 
+const normalizeThread = (thread) => ({
+  employerId: thread.employerId?.toString?.() || thread.employerId,
+  employerName: thread.employerName || 'Employer',
+  employerEmail: thread.employerEmail || '',
+  lastMessage: thread.lastMessage || '',
+  lastMessageAt: thread.lastMessageAt || new Date().toISOString(),
+  unreadCount: thread.unreadCount || 0,
+});
+
 const formatRelativeTime = (value) => {
   if (!value) return "Just now";
   const date = new Date(value);
@@ -35,7 +44,7 @@ const formatRelativeTime = (value) => {
   return date.toLocaleDateString();
 };
 
-const ThreadListItem = ({ thread, isActive, onSelect }) => (
+const ThreadListItem = ({ thread, isActive, onSelect, isOnline }) => (
   <button
     onClick={onSelect}
     className={`w-full rounded-xl border p-4 text-left transition ${
@@ -44,7 +53,14 @@ const ThreadListItem = ({ thread, isActive, onSelect }) => (
   >
     <div className="flex items-center justify-between gap-3">
       <div>
-        <p className="text-sm font-semibold text-gray-900">{thread.employerName || "Employer"}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold text-gray-900">{thread.employerName || "Employer"}</p>
+          {isOnline && (
+            <span className="inline-flex items-center" aria-label="Online">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            </span>
+          )}
+        </div>
         <p className="mt-1 text-sm text-gray-600 line-clamp-2">{thread.lastMessage || "No messages yet"}</p>
       </div>
       <div className="flex flex-col items-end gap-2">
@@ -130,6 +146,7 @@ const MessagesContent = ({ user, apiClient = api }) => {
   const [attachment, setAttachment] = useState(null);
   const [attachmentError, setAttachmentError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [onlineEmployers, setOnlineEmployers] = useState(() => new Set());
 
   const socketRef = useRef(null);
   const selectedEmployerRef = useRef(null);
@@ -150,9 +167,10 @@ const MessagesContent = ({ user, apiClient = api }) => {
   }, [messagesByEmployer]);
 
   const updateThreadMeta = (employerId, updates = {}) => {
+    const key = employerId?.toString?.() || employerId;
     setThreads((prev) => {
-      const index = prev.findIndex((thread) => thread.employerId === employerId);
-      const base = index >= 0 ? prev[index] : {};
+      const index = prev.findIndex((thread) => thread.employerId === key);
+      const base = index >= 0 ? prev[index] : { employerId: key };
       const incrementUnread = updates.incrementUnread ? 1 : 0;
       const resetUnread = updates.resetUnread ?? false;
       const unreadCount = resetUnread
@@ -162,7 +180,7 @@ const MessagesContent = ({ user, apiClient = api }) => {
         : base.unreadCount || 0;
 
       const merged = {
-        employerId,
+        employerId: key,
         employerName: updates.employerName ?? base.employerName ?? "Employer",
         employerEmail: updates.employerEmail ?? base.employerEmail ?? "",
         lastMessage: updates.lastMessage ?? base.lastMessage ?? "",
@@ -183,7 +201,7 @@ const MessagesContent = ({ user, apiClient = api }) => {
 
   const ensureThreadExists = (summary = {}) => {
     if (!summary.employerId) return;
-    const employerId = summary.employerId;
+    const employerId = summary.employerId?.toString?.() || summary.employerId;
     if (threadsRef.current.some((thread) => thread.employerId === employerId)) return;
     updateThreadMeta(employerId, {
       employerName: summary.employerName || 'Employer',
@@ -202,7 +220,7 @@ const MessagesContent = ({ user, apiClient = api }) => {
 
     try {
       const { data } = await apiClient.get('/messages');
-      const list = data?.data?.threads ?? [];
+      const list = (data?.data?.threads ?? []).map(normalizeThread);
       setThreads(list);
       if (list.length > 0 && !selectedEmployerRef.current) {
         setSelectedEmployerId(list[0].employerId);
@@ -263,35 +281,59 @@ const MessagesContent = ({ user, apiClient = api }) => {
         };
       });
 
+      const key = employerId.toString();
       const incrementUnread =
-        normalized.senderType === 'employer' && selectedEmployerRef.current !== employerId;
+        normalized.senderType === 'employer' && selectedEmployerRef.current !== key;
 
-      updateThreadMeta(employerId, {
+      updateThreadMeta(key, {
         employerName: context.employerName,
         employerEmail: context.employerEmail,
         lastMessage: normalized.body,
         lastMessageAt: normalized.createdAt,
         incrementUnread,
-        resetUnread: selectedEmployerRef.current === employerId,
+        resetUnread: selectedEmployerRef.current === key,
       });
     };
 
     const handleConversationUpdate = (summary) => {
       if (!summary?.employerId) return;
       ensureThreadExists(summary);
-      const incrementUnread = summary.senderType === 'employer' && selectedEmployerRef.current !== summary.employerId;
-      updateThreadMeta(summary.employerId, {
+      const key = summary.employerId.toString();
+      const incrementUnread = summary.senderType === 'employer' && selectedEmployerRef.current !== key;
+      updateThreadMeta(key, {
         employerName: summary.employerName,
         employerEmail: summary.employerEmail,
         lastMessage: summary.lastMessage,
         lastMessageAt: summary.lastMessageAt,
         incrementUnread,
-        resetUnread: selectedEmployerRef.current === summary.employerId,
+        resetUnread: selectedEmployerRef.current === key,
+      });
+    };
+
+    const handlePresenceBootstrap = (payload = {}) => {
+      if (Array.isArray(payload.employers)) {
+        setOnlineEmployers(new Set(payload.employers.map((id) => id.toString())));
+      }
+    };
+
+    const handlePresenceUpdate = (payload = {}) => {
+      if (payload.role !== 'employer' || !payload.id) return;
+      const key = payload.id.toString();
+      setOnlineEmployers((prev) => {
+        const next = new Set(prev);
+        if (payload.online) {
+          next.add(key);
+        } else {
+          next.delete(key);
+        }
+        return next;
       });
     };
 
     socket.on('message:new', handleIncomingMessage);
     socket.on('conversation:updated', handleConversationUpdate);
+    socket.on('presence:bootstrap', handlePresenceBootstrap);
+    socket.on('presence:update', handlePresenceUpdate);
     socket.on('connect_error', (err) => {
       console.error('Socket error:', err.message);
     });
@@ -299,6 +341,8 @@ const MessagesContent = ({ user, apiClient = api }) => {
     return () => {
       socket.off('message:new', handleIncomingMessage);
       socket.off('conversation:updated', handleConversationUpdate);
+      socket.off('presence:bootstrap', handlePresenceBootstrap);
+      socket.off('presence:update', handlePresenceUpdate);
       socket.disconnect();
     };
   }, []);
@@ -505,6 +549,7 @@ const MessagesContent = ({ user, apiClient = api }) => {
                         key={thread.employerId}
                         thread={thread}
                         isActive={thread.employerId === selectedEmployerId}
+                        isOnline={onlineEmployers.has(thread.employerId)}
                         onSelect={() => setSelectedEmployerId(thread.employerId)}
                       />
                     ))
@@ -528,9 +573,18 @@ const MessagesContent = ({ user, apiClient = api }) => {
                     {(() => {
                       const thread = threads.find((item) => item.employerId === selectedEmployerId);
                       if (!thread) return null;
+                      const isOnline = onlineEmployers.has(thread.employerId);
                       return (
                         <div>
-                          <p className="text-sm font-semibold text-gray-900">{thread.employerName || 'Employer'}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-gray-900">{thread.employerName || 'Employer'}</p>
+                            {isOnline && (
+                              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+                                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Online
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-gray-500">{thread.employerEmail}</p>
                         </div>
                       );
@@ -577,7 +631,7 @@ const MessagesContent = ({ user, apiClient = api }) => {
                         }
                       }}
                       placeholder="Type your message..."
-                      className="w-full resize-none border-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+                      className="w-full resize-none border-none bg-transparent text-sm text-gray-900 placeholder:text-gray-600 focus:outline-none"
                     />
                     {attachment && (
                       <div className="mt-2 flex items-center justify-between gap-3 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs text-indigo-700">

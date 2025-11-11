@@ -73,7 +73,7 @@ const formatRelativeTime = (value) => {
   return date.toLocaleDateString();
 };
 
-const ThreadListItem = ({ thread, isActive, onSelect }) => {
+const ThreadListItem = ({ thread, isActive, onSelect, isOnline }) => {
   const initials = (thread.applicantName || 'A')
     .split(' ')
     .map((n) => n.charAt(0))
@@ -100,9 +100,16 @@ const ThreadListItem = ({ thread, isActive, onSelect }) => {
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className="text-sm font-semibold leading-tight text-gray-900 break-words">
-              {thread.applicantName || 'Applicant'}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold leading-tight text-gray-900 break-words">
+                {thread.applicantName || 'Applicant'}
+              </p>
+              {isOnline && (
+                <span className="inline-flex items-center" aria-label="Online">
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                </span>
+              )}
+            </div>
             <span className="whitespace-nowrap text-xs text-gray-400">
               {formatRelativeTime(thread.lastMessageAt)}
             </span>
@@ -182,6 +189,7 @@ export default function EmployerMessagesPage() {
   const [applicants, setApplicants] = useState([]);
   const [candidateSearch, setCandidateSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [onlineApplicants, setOnlineApplicants] = useState(() => new Set());
 
   const socketRef = useRef(null);
   const activeApplicantRef = useRef(null);
@@ -312,8 +320,30 @@ export default function EmployerMessagesPage() {
       });
     };
 
+    const handlePresenceBootstrap = (payload = {}) => {
+      if (Array.isArray(payload.applicants)) {
+        setOnlineApplicants(new Set(payload.applicants.map((id) => id.toString())));
+      }
+    };
+
+    const handlePresenceUpdate = (payload = {}) => {
+      if (payload.role !== 'applicant' || !payload.id) return;
+      const key = payload.id.toString();
+      setOnlineApplicants((prev) => {
+        const next = new Set(prev);
+        if (payload.online) {
+          next.add(key);
+        } else {
+          next.delete(key);
+        }
+        return next;
+      });
+    };
+
     socket.on('message:new', handleIncomingMessage);
     socket.on('conversation:updated', handleConversationUpdate);
+    socket.on('presence:bootstrap', handlePresenceBootstrap);
+    socket.on('presence:update', handlePresenceUpdate);
     socket.on('connect_error', (err) => {
       console.error('Socket error:', err.message);
     });
@@ -321,6 +351,8 @@ export default function EmployerMessagesPage() {
     return () => {
       socket.off('message:new', handleIncomingMessage);
       socket.off('conversation:updated', handleConversationUpdate);
+      socket.off('presence:bootstrap', handlePresenceBootstrap);
+      socket.off('presence:update', handlePresenceUpdate);
       socket.disconnect();
     };
   }, []);
@@ -578,6 +610,7 @@ export default function EmployerMessagesPage() {
                     key={thread.applicantId}
                     thread={thread}
                     isActive={thread.applicantId === activeApplicantId}
+                    isOnline={onlineApplicants.has(thread.applicantId)}
                     onSelect={() => setActiveApplicantId(thread.applicantId)}
                   />
                 ))
@@ -593,6 +626,7 @@ export default function EmployerMessagesPage() {
                 {(() => {
                   const thread = threads.find((item) => item.applicantId === activeApplicantId);
                   if (!thread) return null;
+                  const isOnline = onlineApplicants.has(thread.applicantId);
                   return (
                     <>
                       <div className="flex items-center gap-4">
@@ -609,8 +643,21 @@ export default function EmployerMessagesPage() {
                             .toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-gray-900">{thread.applicantName}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-gray-900">{thread.applicantName}</p>
+                            {isOnline && (
+                              <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+                                <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                                Online
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-gray-500">{thread.applicantEmail}</p>
+                          {thread.applicantPhone && (
+                            <p className="mt-1 text-xs text-gray-500 flex items-center gap-1">
+                              <Phone className="h-3 w-3" /> {thread.applicantPhone}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <button className="rounded-full border border-gray-200 p-2 text-gray-500 hover:bg-gray-50">
